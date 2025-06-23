@@ -16,14 +16,14 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-COPY requirements.txt .
+COPY docker/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project
 COPY . .
 
 # Make health check script executable
-RUN chmod +x /app/health_check.sh
+RUN chmod +x /app/docker/scripts/health_check.sh
 
 # Create app directory if it doesn't exist
 RUN mkdir -p /app/app

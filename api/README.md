@@ -2,19 +2,20 @@
 
 A FastAPI-based quiz application for Mercedes-Benz enthusiasts.
 
-## Quick Start with Docker Compose
+## Quick Start with Make Commands
 
 ### Prerequisites
 
 - Docker
 - Docker Compose
+- Make
 
 ### Setup
 
 1. **Copy the environment file:**
 
    ```bash
-   cp env.example .env
+   cp env.example ./../compose/.env
    ```
 
 2. **Edit the `.env` file** with your desired configuration:
@@ -43,7 +44,7 @@ A FastAPI-based quiz application for Mercedes-Benz enthusiasts.
 3. **Start the services:**
 
    ```bash
-   docker-compose up -d
+   make up
    ```
 
 4. **Access the API:**
@@ -74,6 +75,7 @@ All configuration is handled through environment variables in the `.env` file:
 | `POSTGRES_USER`     | PostgreSQL username           | quiz_user                                   |
 | `POSTGRES_PASSWORD` | PostgreSQL password           | quiz_password                               |
 | `POSTGRES_PORT`     | PostgreSQL port               | 5432                                        |
+| `STAR_WARS_API_URL` | Star Wars API base URL        | https://swapi.py4e.com/api/                 |
 
 ### API Endpoints
 
@@ -84,44 +86,21 @@ All configuration is handled through environment variables in the `.env` file:
 - `POST /submit-answer` - Submit quiz answer
 - `GET /categories` - Get question categories
 
+### Available Make Commands
+
+Use these make commands to manage the application:
+
+| Command         | Description                                                  |
+| --------------- | ------------------------------------------------------------ |
+| `make help`     | Show all available commands                                  |
+| `make up`       | Start services in detached mode                              |
+| `make run`      | Start services with logs (development mode)                  |
+| `make down`     | Stop services                                                |
+| `make logs`     | View service logs                                            |
+| `make build`    | Build containers                                             |
+| `make recreate` | Recreate containers with fresh volumes                       |
+| `make clean`    | Stop services and remove all containers, images, and volumes |
+
 ### Development
 
 To run in development mode with auto-reload:
-
-```bash
-docker-compose up
-```
-
-To rebuild the containers:
-
-```bash
-docker-compose up --build
-```
-
-To stop the services:
-
-```bash
-docker-compose down
-```
-
-To stop and remove volumes:
-
-```bash
-docker-compose down -v
-```
-
-### Production
-
-For production deployment:
-
-1. Set `DEBUG=false` in your `.env` file
-2. Use a strong `SECRET_KEY`
-3. Configure proper `CORS_ORIGINS` for your domain
-4. Use environment-specific database credentials
-5. Consider using Docker secrets for sensitive data
-
-### Troubleshooting
-
-- **Port conflicts**: Change the port mappings in `docker-compose.yml` or `.env`
-- **Database connection issues**: Ensure PostgreSQL service is running and credentials are correct
-- **Permission issues**: Check file permissions on mounted volumes

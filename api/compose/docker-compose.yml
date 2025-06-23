@@ -3,8 +3,8 @@ version: '3.8'
 services:
   fastapi-app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/Dockerfile
     ports:
       - "${APP_PORT}:8000"
     environment:
@@ -17,14 +17,14 @@ services:
       - CORS_ORIGINS=${CORS_ORIGINS}
       - STAR_WARS_API_URL=${STAR_WARS_API_URL}
     volumes:
-      - ./app:/app/app
+      - ../app:/app/app
     depends_on:
       - postgres
     networks:
       - app-network
     restart: "no"
     healthcheck:
-      test: ["CMD-SHELL", "/app/health_check.sh"]
+      test: ["CMD-SHELL", "/app/docker/scripts/health_check.sh"]
       interval: 30s
       timeout: 10s
       retries: 3
