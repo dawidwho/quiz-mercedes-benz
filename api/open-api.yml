@@ -1,0 +1,252 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Mercedes-Benz Quiz API", "version": "1.0.0" },
+  "paths":
+    {
+      "/":
+        {
+          "get":
+            {
+              "summary": "Root",
+              "operationId": "root__get",
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Successful Response",
+                      "content": { "application/json": { "schema": {} } },
+                    },
+                },
+            },
+        },
+      "/health":
+        {
+          "get":
+            {
+              "summary": "Health Check",
+              "operationId": "health_check_health_get",
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Successful Response",
+                      "content": { "application/json": { "schema": {} } },
+                    },
+                },
+            },
+        },
+      "/questions":
+        {
+          "get":
+            {
+              "summary": "Get Questions",
+              "description": "Get all quiz questions",
+              "operationId": "get_questions_questions_get",
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Successful Response",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "items":
+                                    {
+                                      "$ref": "#/components/schemas/QuizQuestion",
+                                    },
+                                  "type": "array",
+                                  "title": "Response Get Questions Questions Get",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+      "/questions/{question_id}":
+        {
+          "get":
+            {
+              "summary": "Get Question",
+              "description": "Get a specific question by ID",
+              "operationId": "get_question_questions__question_id__get",
+              "parameters":
+                [
+                  {
+                    "name": "question_id",
+                    "in": "path",
+                    "required": true,
+                    "schema": { "type": "integer", "title": "Question Id" },
+                  },
+                ],
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Successful Response",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                { "$ref": "#/components/schemas/QuizQuestion" },
+                            },
+                        },
+                    },
+                  "422":
+                    {
+                      "description": "Validation Error",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/HTTPValidationError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+      "/submit-answer":
+        {
+          "post":
+            {
+              "summary": "Submit Answer",
+              "description": "Submit an answer for a question",
+              "operationId": "submit_answer_submit_answer_post",
+              "requestBody":
+                {
+                  "content":
+                    {
+                      "application/json":
+                        {
+                          "schema":
+                            { "$ref": "#/components/schemas/QuizResponse" },
+                        },
+                    },
+                  "required": true,
+                },
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Successful Response",
+                      "content": { "application/json": { "schema": {} } },
+                    },
+                  "422":
+                    {
+                      "description": "Validation Error",
+                      "content":
+                        {
+                          "application/json":
+                            {
+                              "schema":
+                                {
+                                  "$ref": "#/components/schemas/HTTPValidationError",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+      "/categories":
+        {
+          "get":
+            {
+              "summary": "Get Categories",
+              "description": "Get all available question categories",
+              "operationId": "get_categories_categories_get",
+              "responses":
+                {
+                  "200":
+                    {
+                      "description": "Successful Response",
+                      "content": { "application/json": { "schema": {} } },
+                    },
+                },
+            },
+        },
+    },
+  "components":
+    {
+      "schemas":
+        {
+          "HTTPValidationError":
+            {
+              "properties":
+                {
+                  "detail":
+                    {
+                      "items":
+                        { "$ref": "#/components/schemas/ValidationError" },
+                      "type": "array",
+                      "title": "Detail",
+                    },
+                },
+              "type": "object",
+              "title": "HTTPValidationError",
+            },
+          "QuizQuestion":
+            {
+              "properties":
+                {
+                  "id": { "type": "integer", "title": "Id" },
+                  "question": { "type": "string", "title": "Question" },
+                  "options":
+                    {
+                      "items": { "type": "string" },
+                      "type": "array",
+                      "title": "Options",
+                    },
+                  "correct_answer":
+                    { "type": "integer", "title": "Correct Answer" },
+                  "category": { "type": "string", "title": "Category" },
+                },
+              "type": "object",
+              "required":
+                ["id", "question", "options", "correct_answer", "category"],
+              "title": "QuizQuestion",
+            },
+          "QuizResponse":
+            {
+              "properties":
+                {
+                  "question_id": { "type": "integer", "title": "Question Id" },
+                  "selected_answer":
+                    { "type": "integer", "title": "Selected Answer" },
+                },
+              "type": "object",
+              "required": ["question_id", "selected_answer"],
+              "title": "QuizResponse",
+            },
+          "ValidationError":
+            {
+              "properties":
+                {
+                  "loc":
+                    {
+                      "items":
+                        {
+                          "anyOf":
+                            [{ "type": "string" }, { "type": "integer" }],
+                        },
+                      "type": "array",
+                      "title": "Location",
+                    },
+                  "msg": { "type": "string", "title": "Message" },
+                  "type": { "type": "string", "title": "Error Type" },
+                },
+              "type": "object",
+              "required": ["loc", "msg", "type"],
+              "title": "ValidationError",
+            },
+        },
+    },
+}

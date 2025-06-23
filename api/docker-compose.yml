@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  fastapi-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${APP_PORT}:8000"
+    environment:
+      - APP_NAME=${APP_NAME}
+      - APP_VERSION=${APP_VERSION}
+      - DEBUG=${DEBUG}
+      - DATABASE_URL=${DATABASE_URL}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+      - STAR_WARS_API_URL=${STAR_WARS_API_URL}
+    volumes:
+      - ./app:/app/app
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    restart: "no"
+    healthcheck:
+      test: ["CMD-SHELL", "/app/health_check.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge 
