@@ -16,6 +16,30 @@ class SortOrder(str, Enum):
     DESC = "desc"
 
 
+class SortField(str, Enum):
+    """Sortable fields enumeration."""
+
+    # People fields
+    NAME = "name"
+    HEIGHT = "height"
+    MASS = "mass"
+    HAIR_COLOR = "hair_color"
+    SKIN_COLOR = "skin_color"
+    EYE_COLOR = "eye_color"
+    BIRTH_YEAR = "birth_year"
+    GENDER = "gender"
+
+    # Planet fields
+    DIAMETER = "diameter"
+    ROTATION_PERIOD = "rotation_period"
+    ORBITAL_PERIOD = "orbital_period"
+    GRAVITY = "gravity"
+    POPULATION = "population"
+    CLIMATE = "climate"
+    TERRAIN = "terrain"
+    SURFACE_WATER = "surface_water"
+
+
 class PaginationParams(BaseModel):
     """Pagination parameters for requests."""
 
@@ -26,7 +50,7 @@ class PaginationParams(BaseModel):
 class SortParams(BaseModel):
     """Sorting parameters for requests."""
 
-    sort_by: Optional[str] = None
+    sort_by: Optional[SortField] = None
     sort_order: SortOrder = SortOrder.ASC
 
 

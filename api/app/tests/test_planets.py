@@ -34,7 +34,16 @@ def test_read_planets(client: TestClient):
     """Test reading planets list."""
     response = client.get("/api/planets/")
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    data = response.json()
+    # Check that it's a paginated response object
+    assert "items" in data
+    assert "total" in data
+    assert "page" in data
+    assert "size" in data
+    assert "pages" in data
+    assert "has_next" in data
+    assert "has_prev" in data
+    assert isinstance(data["items"], list)
 
 
 def test_read_planets_by_id(client: TestClient):

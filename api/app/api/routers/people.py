@@ -19,7 +19,7 @@ people_crud = crud.CRUDBase(PeopleModel)
 def read_people(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Items per page"),
-    sort_by: str = Query(
+    sort_by: schemas.SortField = Query(
         None, description="Field to sort by (name, height, mass, etc.)"
     ),
     sort_order: schemas.SortOrder = Query(

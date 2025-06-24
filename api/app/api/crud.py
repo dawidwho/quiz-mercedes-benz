@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, func, desc, asc
 
 from app.db.base import Base
+from app.api.sorting import sort_factory
+from app.api.schemas import SortField, SortOrder
 
 ModelType = TypeVar("ModelType", bound=Base)
 
@@ -42,19 +44,15 @@ class CRUDBase:
         db: Session,
         skip: int = 0,
         limit: int = 100,
-        sort_by: Optional[str] = None,
-        sort_order: str = "asc",
+        sort_by: Optional[SortField] = None,
+        sort_order: SortOrder = SortOrder.ASC,
     ) -> Tuple[List[ModelType], int]:
-        """Get multiple records with pagination, sorting and total count."""
+        """Get multiple records with pagination, sorting and total count using strategy pattern."""
         query = db.query(self.model)
 
-        # Apply sorting if sort_by is provided
-        if sort_by and hasattr(self.model, sort_by):
-            sort_column = getattr(self.model, sort_by)
-            if sort_order.lower() == "desc":
-                query = query.order_by(desc(sort_column))
-            else:
-                query = query.order_by(asc(sort_column))
+        # Apply sorting using the strategy pattern
+        if sort_by:
+            query = sort_factory.apply_sort(query, self.model, sort_by, sort_order)
         else:
             # Default sorting by ID
             query = query.order_by(asc(self.model.id))
