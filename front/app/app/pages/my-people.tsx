@@ -1,18 +1,18 @@
-import type { Route } from "./+types/saved-people";
+import type { Route } from "./+types/my-people";
 
 export function meta({ }: Route.MetaArgs) {
     return [
-        { title: "Saved People - Quiz Mercedes-Benz" },
-        { name: "description", content: "Your saved Star Wars characters" },
+        { title: "My People - Quiz Mercedes-Benz" },
+        { name: "description", content: "Your Star Wars characters" },
     ];
 }
 
-export default function SavedPeople() {
+export default function MyPeople() {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
                 <header className="mb-8">
-                    <h1 className="text-3xl font-bold text-white mb-4">Saved People</h1>
+                    <h1 className="text-3xl font-bold text-white mb-4">My People</h1>
                     <p className="text-gray-300 text-lg">
                         Your favorite Star Wars characters that you've saved
                     </p>

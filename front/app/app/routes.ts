@@ -4,6 +4,6 @@ export default [
   index("pages/home.tsx"),
   route("people", "pages/people.tsx"),
   route("planets", "pages/planets.tsx"),
-  route("saved-people", "pages/saved-people.tsx"),
-  route("saved-planets", "pages/saved-planets.tsx"),
+  route("my-people", "pages/my-people.tsx"),
+  route("my-planets", "pages/my-planets.tsx"),
 ] satisfies RouteConfig;
