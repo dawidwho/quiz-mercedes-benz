@@ -47,7 +47,7 @@ Good luck and thank you again for your time!
 - [ ] 6. **Containerization**
 
   - [x] Use **Docker** to containerize both backend and frontend.
-  - [ ] Provide a **Docker Compose** setup that runs the system on port **6969**.
+  - [x] Provide a **Docker Compose** setup that runs the system on port **6969**.
 
 ---
 

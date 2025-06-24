@@ -9,6 +9,9 @@ help:
 up:
 	docker-compose -f compose/docker-compose.yml up -d
 
+up-6969:
+	FRONTEND_PORT=6969 docker-compose -f compose/docker-compose.yml up -d
+
 recreate:
 	docker-compose -f compose/docker-compose.yml down -v
 	docker-compose -f compose/docker-compose.yml up -d
