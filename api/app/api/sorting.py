@@ -48,6 +48,8 @@ class PeopleSortStrategy(SortStrategy):
             SortField.EYE_COLOR: model.eye_color,
             SortField.BIRTH_YEAR: model.birth_year,
             SortField.GENDER: model.gender,
+            SortField.CREATED_AT: model.created_at,
+            SortField.UPDATED_AT: model.updated_at,
         }
 
         if sort_field in field_mapping:
@@ -85,6 +87,8 @@ class PlanetsSortStrategy(SortStrategy):
             SortField.CLIMATE: model.climate,
             SortField.TERRAIN: model.terrain,
             SortField.SURFACE_WATER: model.surface_water,
+            SortField.CREATED_AT: model.created_at,
+            SortField.UPDATED_AT: model.updated_at,
         }
 
         if sort_field in field_mapping:

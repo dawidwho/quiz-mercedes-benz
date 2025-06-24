@@ -8,6 +8,8 @@ export interface Person {
     birth_year: string;
     gender: string;
     id: number;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface PeopleResponse {
@@ -24,7 +26,7 @@ export interface PeopleResponse {
 export type FilterField = 'name' | 'height' | 'mass' | 'hair_color' | 'skin_color' | 'eye_color' | 'birth_year' | 'gender';
 
 // Sort field options
-export type SortField = 'name' | 'height' | 'mass' | 'birth_year';
+export type SortField = 'name' | 'height' | 'mass' | 'birth_year' | 'created_at' | 'updated_at';
 
 // Sort order options
 export type SortOrder = 'asc' | 'desc';

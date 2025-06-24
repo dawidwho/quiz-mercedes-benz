@@ -5,6 +5,7 @@ Pydantic schemas for API requests and responses.
 from pydantic import BaseModel
 from typing import Optional, List, Generic, TypeVar
 from enum import Enum
+from datetime import datetime
 
 T = TypeVar("T")
 
@@ -28,6 +29,8 @@ class SortField(str, Enum):
     EYE_COLOR = "eye_color"
     BIRTH_YEAR = "birth_year"
     GENDER = "gender"
+    CREATED_AT = "created_at"
+    UPDATED_AT = "updated_at"
 
     # Planet fields
     DIAMETER = "diameter"
@@ -109,6 +112,8 @@ class People(PeopleBase):
     """Schema for people responses."""
 
     id: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class PlanetsBase(BaseSchema):
@@ -149,3 +154,5 @@ class Planets(PlanetsBase):
     """Schema for planets responses."""
 
     id: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None

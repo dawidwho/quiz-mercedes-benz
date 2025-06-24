@@ -5,6 +5,7 @@ import type { GridColDef } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import { CircularProgress, Alert } from "@mui/material";
 import { starWarsApiClient } from "../services/apiClientStarWars";
+import { formatDate } from "../helpers/formatters";
 
 // Dynamic import to avoid SSR issues
 const DataGrid = lazy(() => import("@mui/x-data-grid").then(module => ({ default: module.DataGrid })));
@@ -105,6 +106,20 @@ export default function Planets() {
         { field: 'terrain', headerName: 'Terrain', width: 150, filterable: true },
         { field: 'surface_water', headerName: 'Surface Water (%)', width: 150, type: 'number', filterable: true },
         { field: 'population', headerName: 'Population', width: 140, type: 'number', filterable: true },
+        {
+            field: 'created_at',
+            headerName: 'Created',
+            width: 150,
+            filterable: true,
+            valueFormatter: (params: any) => formatDate(params)
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Updated',
+            width: 150,
+            filterable: true,
+            valueFormatter: (params: any) => formatDate(params)
+        },
     ];
 
     if (loading) {

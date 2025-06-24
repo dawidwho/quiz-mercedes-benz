@@ -5,6 +5,7 @@ import type { GridColDef } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import { CircularProgress, Alert } from "@mui/material";
 import { starWarsApiClient } from "../services/apiClientStarWars";
+import { formatDate } from "../helpers/formatters";
 
 // Dynamic import to avoid SSR issues
 const DataGrid = lazy(() => import("@mui/x-data-grid").then(module => ({ default: module.DataGrid })));
@@ -110,6 +111,20 @@ export default function People() {
         { field: 'eye_color', headerName: 'Eye Color', width: 120, filterable: true },
         { field: 'birth_year', headerName: 'Birth Year', width: 120, filterable: true },
         { field: 'gender', headerName: 'Gender', width: 100, filterable: true },
+        {
+            field: 'created_at',
+            headerName: 'Created',
+            width: 150,
+            filterable: true,
+            valueFormatter: (params: any) => formatDate(params)
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Updated',
+            width: 150,
+            filterable: true,
+            valueFormatter: (params: any) => formatDate(params)
+        },
     ];
 
     if (loading) {

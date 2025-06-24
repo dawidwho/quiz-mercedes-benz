@@ -36,7 +36,7 @@ Good luck and thank you again for your time!
 
 - [ ] 4. **Sorting**
 
-  - [ ] Allow sorting by **name** and **created** fields, in both ascending and descending order.
+  - [x] Allow sorting by **name** and **created** fields, in both ascending and descending order.
   - [x] Sorting mechanism designed following the _Open‑Closed Principle_ and implemented in the **backend**.
 
 - [x] 5. **Technology Stack**
