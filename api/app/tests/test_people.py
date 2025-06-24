@@ -45,6 +45,59 @@ def test_read_people(client: TestClient):
     assert isinstance(data["items"], list)
 
 
+def test_search_people_by_name(client: TestClient):
+    """Test searching people by name with case-insensitive partial matching."""
+    # Create test data
+    people_data_1 = {"name": "Luke Skywalker", "height": "172"}
+    people_data_2 = {"name": "Leia Organa", "height": "150"}
+    people_data_3 = {"name": "Han Solo", "height": "180"}
+
+    client.post("/api/people/", json=people_data_1)
+    client.post("/api/people/", json=people_data_2)
+    client.post("/api/people/", json=people_data_3)
+
+    # Test search by "sky" (should find "Luke Skywalker")
+    response = client.get("/api/people/?name=sky")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["items"]) >= 1
+    assert any("Skywalker" in person["name"] for person in data["items"])
+
+    # Test search by "SKY" (case-insensitive)
+    response = client.get("/api/people/?name=SKY")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["items"]) >= 1
+    assert any("Skywalker" in person["name"] for person in data["items"])
+
+    # Test search by "luke" (partial match)
+    response = client.get("/api/people/?name=luke")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["items"]) >= 1
+    assert any("Luke" in person["name"] for person in data["items"])
+
+
+def test_search_people_by_multiple_fields(client: TestClient):
+    """Test searching people by multiple fields."""
+    # Create test data
+    people_data_1 = {"name": "Luke Skywalker", "height": "172", "hair_color": "blond"}
+    people_data_2 = {"name": "Leia Organa", "height": "150", "hair_color": "brown"}
+
+    client.post("/api/people/", json=people_data_1)
+    client.post("/api/people/", json=people_data_2)
+
+    # Test search by name and hair_color
+    response = client.get("/api/people/?name=luke&hair_color=blond")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["items"]) >= 1
+    assert any(
+        person["name"] == "Luke Skywalker" and person["hair_color"] == "blond"
+        for person in data["items"]
+    )
+
+
 def test_read_people_by_id(client: TestClient):
     """Test reading a specific people by ID."""
     # First create a people

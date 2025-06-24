@@ -4,7 +4,7 @@ CRUD operations for database models.
 
 from typing import List, Optional, Type, TypeVar, Tuple
 from sqlalchemy.orm import Session
-from sqlalchemy import select, func, desc, asc
+from sqlalchemy import select, func, desc, asc, or_
 
 from app.db.base import Base
 from app.api.sorting import sort_factory
@@ -59,6 +59,46 @@ class CRUDBase:
 
         items = query.offset(skip).limit(limit).all()
         total = db.query(func.count(self.model.id)).scalar()
+        return items, total
+
+    def get_multi_paginated_with_search(
+        self,
+        db: Session,
+        skip: int = 0,
+        limit: int = 100,
+        sort_by: Optional[SortField] = None,
+        sort_order: SortOrder = SortOrder.ASC,
+        search_params: Optional[dict] = None,
+    ) -> Tuple[List[ModelType], int]:
+        """Get multiple records with pagination, sorting, search and total count."""
+        query = db.query(self.model)
+
+        # Apply search filters
+        if search_params:
+            search_filters = []
+            for field_name, search_value in search_params.items():
+                if hasattr(self.model, field_name) and search_value:
+                    # Case-insensitive partial match using ILIKE
+                    field = getattr(self.model, field_name)
+                    search_filters.append(field.ilike(f"%{search_value}%"))
+
+            if search_filters:
+                query = query.filter(or_(*search_filters))
+
+        # Apply sorting using the strategy pattern
+        if sort_by:
+            query = sort_factory.apply_sort(query, self.model, sort_by, sort_order)
+        else:
+            # Default sorting by ID
+            query = query.order_by(asc(self.model.id))
+
+        # Get total count for pagination
+        total_query = query
+        total = total_query.count()
+
+        # Apply pagination
+        items = query.offset(skip).limit(limit).all()
+
         return items, total
 
     def create(self, db: Session, obj_in) -> ModelType:

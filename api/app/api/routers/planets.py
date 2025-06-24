@@ -2,7 +2,7 @@
 Planets router with CRUD endpoints.
 """
 
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
@@ -25,12 +25,66 @@ def read_planets(
     sort_order: schemas.SortOrder = Query(
         schemas.SortOrder.ASC, description="Sort order (asc or desc)"
     ),
+    name: Optional[str] = Query(
+        None, description="Search by name (case-insensitive partial match)"
+    ),
+    diameter: Optional[str] = Query(
+        None, description="Search by diameter (case-insensitive partial match)"
+    ),
+    rotation_period: Optional[str] = Query(
+        None, description="Search by rotation period (case-insensitive partial match)"
+    ),
+    orbital_period: Optional[str] = Query(
+        None, description="Search by orbital period (case-insensitive partial match)"
+    ),
+    gravity: Optional[str] = Query(
+        None, description="Search by gravity (case-insensitive partial match)"
+    ),
+    population: Optional[str] = Query(
+        None, description="Search by population (case-insensitive partial match)"
+    ),
+    climate: Optional[str] = Query(
+        None, description="Search by climate (case-insensitive partial match)"
+    ),
+    terrain: Optional[str] = Query(
+        None, description="Search by terrain (case-insensitive partial match)"
+    ),
+    surface_water: Optional[str] = Query(
+        None, description="Search by surface water (case-insensitive partial match)"
+    ),
     db: Session = Depends(deps.get_db),
 ):
-    """Retrieve planets with pagination and sorting."""
+    """Retrieve planets with pagination, sorting, and search."""
     skip = (page - 1) * size
-    planets, total = planets_crud.get_multi_paginated_with_sort(
-        db, skip=skip, limit=size, sort_by=sort_by, sort_order=sort_order
+
+    # Build search parameters from query parameters
+    search_params = {}
+    if name:
+        search_params["name"] = name
+    if diameter:
+        search_params["diameter"] = diameter
+    if rotation_period:
+        search_params["rotation_period"] = rotation_period
+    if orbital_period:
+        search_params["orbital_period"] = orbital_period
+    if gravity:
+        search_params["gravity"] = gravity
+    if population:
+        search_params["population"] = population
+    if climate:
+        search_params["climate"] = climate
+    if terrain:
+        search_params["terrain"] = terrain
+    if surface_water:
+        search_params["surface_water"] = surface_water
+
+    planets, total = planets_crud.get_multi_paginated_with_search(
+        db,
+        skip=skip,
+        limit=size,
+        sort_by=sort_by,
+        sort_order=sort_order,
+        search_params=search_params if search_params else None,
     )
 
     pages = (total + size - 1) // size  # Calculate total pages

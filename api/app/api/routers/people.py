@@ -2,7 +2,7 @@
 People router with CRUD endpoints.
 """
 
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
@@ -25,12 +25,61 @@ def read_people(
     sort_order: schemas.SortOrder = Query(
         schemas.SortOrder.ASC, description="Sort order (asc or desc)"
     ),
+    name: Optional[str] = Query(
+        None, description="Search by name (case-insensitive partial match)"
+    ),
+    height: Optional[str] = Query(
+        None, description="Search by height (case-insensitive partial match)"
+    ),
+    mass: Optional[str] = Query(
+        None, description="Search by mass (case-insensitive partial match)"
+    ),
+    hair_color: Optional[str] = Query(
+        None, description="Search by hair color (case-insensitive partial match)"
+    ),
+    skin_color: Optional[str] = Query(
+        None, description="Search by skin color (case-insensitive partial match)"
+    ),
+    eye_color: Optional[str] = Query(
+        None, description="Search by eye color (case-insensitive partial match)"
+    ),
+    birth_year: Optional[str] = Query(
+        None, description="Search by birth year (case-insensitive partial match)"
+    ),
+    gender: Optional[str] = Query(
+        None, description="Search by gender (case-insensitive partial match)"
+    ),
     db: Session = Depends(deps.get_db),
 ):
-    """Retrieve people with pagination and sorting."""
+    """Retrieve people with pagination, sorting, and search."""
     skip = (page - 1) * size
-    people, total = people_crud.get_multi_paginated_with_sort(
-        db, skip=skip, limit=size, sort_by=sort_by, sort_order=sort_order
+
+    # Build search parameters from query parameters
+    search_params = {}
+    if name:
+        search_params["name"] = name
+    if height:
+        search_params["height"] = height
+    if mass:
+        search_params["mass"] = mass
+    if hair_color:
+        search_params["hair_color"] = hair_color
+    if skin_color:
+        search_params["skin_color"] = skin_color
+    if eye_color:
+        search_params["eye_color"] = eye_color
+    if birth_year:
+        search_params["birth_year"] = birth_year
+    if gender:
+        search_params["gender"] = gender
+
+    people, total = people_crud.get_multi_paginated_with_search(
+        db,
+        skip=skip,
+        limit=size,
+        sort_by=sort_by,
+        sort_order=sort_order,
+        search_params=search_params if search_params else None,
     )
 
     pages = (total + size - 1) // size  # Calculate total pages
