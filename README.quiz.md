@@ -34,7 +34,7 @@ Good luck and thank you again for your time!
   - [ ] A search input for filtering by name in each table.
   - [ ] Case‑insensitive partial matches (e.g., searching for "sky" in **People** should return "Luke Skywalker").
 
-- [ ] 4. **Sorting**
+- [x] 4. **Sorting**
 
   - [x] Allow sorting by **name** and **created** fields, in both ascending and descending order.
   - [x] Sorting mechanism designed following the _Open‑Closed Principle_ and implemented in the **backend**.
@@ -44,7 +44,7 @@ Good luck and thank you again for your time!
   - [x] **Frontend:** React (preferred), Angular, or Vue.
   - [x] **Backend:** Python using FastAPI or Flask.
 
-- [ ] 6. **Containerization**
+- [x] 6. **Containerization**
 
   - [x] Use **Docker** to containerize both backend and frontend.
   - [x] Provide a **Docker Compose** setup that runs the system on port **6969**.
