@@ -1,14 +1,13 @@
 import type { Route } from "./+types/planets";
 import * as React from "react";
-import { lazy, Suspense, useEffect, useState, useCallback } from "react";
-import type { GridColDef } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
-import { CircularProgress, Alert } from "@mui/material";
+import { useEffect, useState, useCallback } from "react";
+import { CircularProgress, Alert, TextField, Select, MenuItem, FormControl, InputLabel, Button, Box, Typography } from "@mui/material";
 import { starWarsApiClient } from "../services/apiClientStarWars";
 import { formatDate } from "../helpers/formatters";
-
-// Dynamic import to avoid SSR issues
-const DataGrid = lazy(() => import("@mui/x-data-grid").then(module => ({ default: module.DataGrid })));
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import StarWarsTable from "../components/StarWarsTable";
+import type { StarWarsTableColumn } from "../components/StarWarsTable";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -22,46 +21,42 @@ export default function Planets() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [totalCount, setTotalCount] = useState(0);
-    const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 });
-    const [filterModel, setFilterModel] = useState<any>({ items: [] });
-    const [sortModel, setSortModel] = useState<any>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(15);
+    const [sortField, setSortField] = useState<string>('');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [filterField, setFilterField] = useState<string>('');
+    const [filterValue, setFilterValue] = useState<string>('');
 
     const loadPlanets = useCallback(async () => {
         try {
             setLoading(true);
 
-            // Prepare parameters for the API call
             const params: any = {
-                page: paginationModel.page + 1, // DataGrid uses 0-based pagination, API uses 1-based
-                size: paginationModel.pageSize
+                page: currentPage,
+                size: pageSize
             };
 
-            console.log('Planets page - paginationModel:', paginationModel);
-            console.log('Planets page - params being sent:', params);
-
-            // Add filter parameters if filter is applied
-            if (filterModel.items && filterModel.items.length > 0) {
-                const filter = filterModel.items[0];
-                params.filterField = filter.columnField;
-                params.filterValue = filter.value;
+            if (filterField && filterValue) {
+                params.filterField = filterField;
+                params.filterValue = filterValue;
             }
 
-            // Add sort parameters if sorting is applied
-            if (sortModel.length > 0) {
-                const sort = sortModel[0];
-                params.sortBy = sort.field;
-                params.sortOrder = sort.sort;
+            if (sortField) {
+                params.sortBy = sortField;
+                params.sortOrder = sortOrder;
             }
 
             const data = await starWarsApiClient.getPlanets(params);
-            console.log('Planets page - API response:', data);
 
-            // Check if data exists and has the expected structure
             if (data && Array.isArray(data.items)) {
-                setPlanets(data.items);
+                const planetsWithIds = data.items.map((planet: any, index: number) => ({
+                    ...planet,
+                    id: index + 1,
+                }));
+                setPlanets(planetsWithIds);
                 setTotalCount(data.total || 0);
             } else {
-                // Handle case where data structure is unexpected
                 setPlanets([]);
                 setTotalCount(0);
                 setError('No data available from the API');
@@ -73,59 +68,52 @@ export default function Planets() {
         } finally {
             setLoading(false);
         }
-    }, [paginationModel, filterModel, sortModel]);
+    }, [currentPage, pageSize, sortField, sortOrder, filterField, filterValue]);
 
-    // Load data when pagination, filter, or sort changes
     useEffect(() => {
         loadPlanets();
-    }, [paginationModel, filterModel, sortModel]);
+    }, [loadPlanets]);
 
-    const handlePaginationModelChange = (newModel: any) => {
-        setPaginationModel(newModel);
+    const handleSort = (field: string) => {
+        if (sortField === field) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortField(field);
+            setSortOrder('asc');
+        }
+        setCurrentPage(1);
     };
 
-    const handleFilterModelChange = (newModel: any) => {
-        setFilterModel(newModel);
-        // Reset to first page when filtering
-        setPaginationModel(prev => ({ ...prev, page: 0 }));
+    const handleFilter = () => {
+        setCurrentPage(1);
     };
 
-    const handleSortModelChange = (newModel: any) => {
-        setSortModel(newModel);
-        // Reset to first page when sorting
-        setPaginationModel(prev => ({ ...prev, page: 0 }));
+    const clearFilter = () => {
+        setFilterField('');
+        setFilterValue('');
+        setCurrentPage(1);
     };
 
-    const columns: GridColDef[] = [
-        { field: 'name', headerName: 'Name', width: 150, filterable: true },
-        { field: 'rotation_period', headerName: 'Rotation Period', width: 140, type: 'number', filterable: true },
-        { field: 'orbital_period', headerName: 'Orbital Period', width: 140, type: 'number', filterable: true },
-        { field: 'diameter', headerName: 'Diameter (km)', width: 140, type: 'number', filterable: true },
-        { field: 'climate', headerName: 'Climate', width: 120, filterable: true },
-        { field: 'gravity', headerName: 'Gravity', width: 120, filterable: true },
-        { field: 'terrain', headerName: 'Terrain', width: 150, filterable: true },
-        { field: 'surface_water', headerName: 'Surface Water (%)', width: 150, type: 'number', filterable: true },
-        { field: 'population', headerName: 'Population', width: 140, type: 'number', filterable: true },
-        {
-            field: 'created_at',
-            headerName: 'Created',
-            width: 150,
-            filterable: true,
-            valueFormatter: (params: any) => formatDate(params)
-        },
-        {
-            field: 'updated_at',
-            headerName: 'Updated',
-            width: 150,
-            filterable: true,
-            valueFormatter: (params: any) => formatDate(params)
-        },
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    const columns: StarWarsTableColumn[] = [
+        { key: 'name', label: 'Name', sortable: true },
+        { key: 'rotation_period', label: 'Rotation Period', sortable: true },
+        { key: 'orbital_period', label: 'Orbital Period', sortable: true },
+        { key: 'diameter', label: 'Diameter (km)', sortable: true },
+        { key: 'climate', label: 'Climate', sortable: true },
+        { key: 'gravity', label: 'Gravity', sortable: true },
+        { key: 'terrain', label: 'Terrain', sortable: true },
+        { key: 'surface_water', label: 'Surface Water (%)', sortable: true },
+        { key: 'population', label: 'Population', sortable: true },
+        { key: 'created_at', label: 'Created', sortable: true, render: (row) => formatDate(row.created_at) },
+        { key: 'updated_at', label: 'Updated', sortable: true, render: (row) => formatDate(row.updated_at) },
     ];
 
     if (loading) {
         return (
             <div className="container mx-auto px-4 py-8">
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-6xl mx-auto">
                     <header className="mb-8">
                         <h1 className="text-3xl font-bold text-white mb-4">Star Wars Planets</h1>
                         <p className="text-gray-300 text-lg">
@@ -143,7 +131,7 @@ export default function Planets() {
     if (error) {
         return (
             <div className="container mx-auto px-4 py-8">
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-6xl mx-auto">
                     <header className="mb-8">
                         <h1 className="text-3xl font-bold text-white mb-4">Star Wars Planets</h1>
                         <p className="text-gray-300 text-lg">
@@ -158,35 +146,105 @@ export default function Planets() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-6xl mx-auto">
                 <header className="mb-8">
                     <h1 className="text-3xl font-bold text-white mb-4">Star Wars Planets</h1>
                     <p className="text-gray-300 text-lg">
                         Discover and learn about planets from the Star Wars universe
                     </p>
                 </header>
-                <Paper sx={{ height: 600, width: '100%' }}>
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <DataGrid
-                            rows={planets}
-                            columns={columns}
-                            paginationModel={paginationModel}
-                            onPaginationModelChange={handlePaginationModelChange}
-                            filterModel={filterModel}
-                            onFilterModelChange={handleFilterModelChange}
-                            sortModel={sortModel}
-                            onSortModelChange={handleSortModelChange}
-                            pageSizeOptions={[15, 25, 50]}
-                            paginationMode="server"
-                            filterMode="server"
-                            sortingMode="server"
-                            rowCount={totalCount}
-                            checkboxSelection
-                            sx={{ border: 0 }}
-                            getRowHeight={() => 'auto'}
+
+                {/* Filter Controls */}
+                <Box sx={{ mb: 3, p: 2, bgcolor: 'rgba(255, 255, 255, 0.05)', borderRadius: 1 }}>
+                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+                        <FormControl sx={{ minWidth: 120 }}>
+                            <InputLabel sx={{ color: 'white' }}>Filter Field</InputLabel>
+                            <Select
+                                value={filterField}
+                                onChange={(e) => setFilterField(e.target.value)}
+                                sx={{ color: 'white', '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255, 255, 255, 0.3)' } }}
+                            >
+                                <MenuItem value="name">Name</MenuItem>
+                                <MenuItem value="rotation_period">Rotation Period</MenuItem>
+                                <MenuItem value="orbital_period">Orbital Period</MenuItem>
+                                <MenuItem value="diameter">Diameter</MenuItem>
+                                <MenuItem value="climate">Climate</MenuItem>
+                                <MenuItem value="gravity">Gravity</MenuItem>
+                                <MenuItem value="terrain">Terrain</MenuItem>
+                                <MenuItem value="surface_water">Surface Water</MenuItem>
+                                <MenuItem value="population">Population</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <TextField
+                            label="Filter Value"
+                            value={filterValue}
+                            onChange={(e) => setFilterValue(e.target.value)}
+                            sx={{
+                                color: 'white',
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.3)' },
+                                    '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)' },
+                                    '& input': { color: 'white' },
+                                    '& label': { color: 'rgba(255, 255, 255, 0.7)' }
+                                }
+                            }}
                         />
-                    </Suspense>
-                </Paper>
+                        <Button variant="contained" onClick={handleFilter} sx={{ bgcolor: '#1976d2' }}>
+                            Filter
+                        </Button>
+                        <Button variant="outlined" onClick={clearFilter} sx={{ borderColor: 'rgba(255, 255, 255, 0.3)', color: 'white' }}>
+                            Clear
+                        </Button>
+                    </Box>
+                </Box>
+
+                {/* Responsive Table */}
+                <StarWarsTable
+                    columns={columns}
+                    data={planets}
+                    sortField={sortField}
+                    sortOrder={sortOrder}
+                    onSort={handleSort}
+                />
+
+                {/* Pagination */}
+                <Box sx={{ mt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
+                    <Typography>
+                        Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, totalCount)} of {totalCount} results
+                    </Typography>
+                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                        <FormControl sx={{ minWidth: 80 }}>
+                            <Select
+                                value={pageSize}
+                                onChange={(e) => setPageSize(Number(e.target.value))}
+                                sx={{ color: 'white', '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255, 255, 255, 0.3)' } }}
+                            >
+                                <MenuItem value={15}>15</MenuItem>
+                                <MenuItem value={25}>25</MenuItem>
+                                <MenuItem value={50}>50</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <Button
+                            variant="outlined"
+                            disabled={currentPage === 1}
+                            onClick={() => setCurrentPage(currentPage - 1)}
+                            sx={{ borderColor: 'rgba(255, 255, 255, 0.3)', color: 'white' }}
+                        >
+                            Previous
+                        </Button>
+                        <Typography sx={{ px: 2 }}>
+                            Page {currentPage} of {totalPages}
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            disabled={currentPage === totalPages}
+                            onClick={() => setCurrentPage(currentPage + 1)}
+                            sx={{ borderColor: 'rgba(255, 255, 255, 0.3)', color: 'white' }}
+                        >
+                            Next
+                        </Button>
+                    </Box>
+                </Box>
             </div>
         </div>
     );
