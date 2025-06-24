@@ -29,10 +29,10 @@ Good luck and thank you again for your time!
 
   - [x] Each table is paginated, displaying **15 items per page**.
 
-- [ ] 3. **Search**
+- [x] 3. **Search**
 
-  - [ ] A search input for filtering by name in each table.
-  - [ ] Case‑insensitive partial matches (e.g., searching for "sky" in **People** should return "Luke Skywalker").
+  - [x] A search input for filtering by name in each table.
+  - [x] Case‑insensitive partial matches (e.g., searching for "sky" in **People** should return "Luke Skywalker").
 
 - [x] 4. **Sorting**
 
@@ -57,14 +57,14 @@ Good luck and thank you again for your time!
 
 - [ ] Add a mock endpoint `/simulate-ai-insight` that, given a person or planet name, returns a generated description (fake AI output).
 - [ ] Add basic logging and/or monitoring to the backend (e.g., log search/sort events).
-- [ ] Use environment variables to prepare the system for deployment on Azure, AWS, or GCP.
+- [x] Use environment variables to prepare the system for deployment on Azure, AWS, or GCP.
 - [ ] Add a basic frontend loading state and error display.
 
 ---
 
 ## Definition of Done
 
-- [ ] The application works as defined in the **Acceptance Criteria**.
+- [x] The application works as defined in the **Acceptance Criteria**.
 - [ ] Source code of the web application provided.
 - [ ] A clear **README** file explaining how to run the application from scratch using Docker Compose.
 - [ ] All integration tests are green.

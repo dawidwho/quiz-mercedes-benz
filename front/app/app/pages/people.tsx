@@ -21,6 +21,7 @@ export default function People() {
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 });
     const [filterModel, setFilterModel] = useState<any>({ items: [] });
     const [sortModel, setSortModel] = useState<any>([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const loadPeople = useCallback(async () => {
         try {
@@ -34,6 +35,11 @@ export default function People() {
 
             console.log('People page - paginationModel:', paginationModel);
             console.log('People page - params being sent:', params);
+
+            // Add search parameter if search term exists
+            if (searchTerm.trim()) {
+                params.name = searchTerm.trim();
+            }
 
             // Add filter parameters if filter is applied
             if (filterModel.items && filterModel.items.length > 0) {
@@ -75,12 +81,12 @@ export default function People() {
         } finally {
             setLoading(false);
         }
-    }, [paginationModel, filterModel, sortModel]);
+    }, [paginationModel, filterModel, sortModel, searchTerm]);
 
-    // Load data when pagination, filter, or sort changes
+    // Load data when pagination, filter, sort, or search changes
     useEffect(() => {
         loadPeople();
-    }, [paginationModel, filterModel, sortModel]);
+    }, [paginationModel, filterModel, sortModel, searchTerm]);
 
     const handlePaginationModelChange = (newModel: any) => {
         setPaginationModel(newModel);
@@ -95,6 +101,12 @@ export default function People() {
     const handleSortModelChange = (newModel: any) => {
         setSortModel(newModel);
         // Reset to first page when sorting
+        setPaginationModel(prev => ({ ...prev, page: 0 }));
+    };
+
+    const handleSearchChange = (searchTerm: string) => {
+        setSearchTerm(searchTerm);
+        // Reset to first page when searching
         setPaginationModel(prev => ({ ...prev, page: 0 }));
     };
 
@@ -139,6 +151,7 @@ export default function People() {
             onPaginationModelChange={handlePaginationModelChange}
             onFilterModelChange={handleFilterModelChange}
             onSortModelChange={handleSortModelChange}
+            onSearchChange={handleSearchChange}
             detailRouteType="people"
         />
     );

@@ -43,6 +43,7 @@ export class StarWarsApiClient {
         filterValue?: string;
         sortBy?: SortField;
         sortOrder?: SortOrder;
+        name?: string;
     }): Promise<PeopleResponse> {
         const {
             page = 1,
@@ -50,7 +51,8 @@ export class StarWarsApiClient {
             filterField,
             filterValue,
             sortBy,
-            sortOrder = 'asc'
+            sortOrder = 'asc',
+            name
         } = params;
 
         // Build query parameters for the API
@@ -68,8 +70,15 @@ export class StarWarsApiClient {
             queryParams.append('sort_order', sortOrder);
         }
 
+        // Add name parameter for search
+        if (name && name.trim()) {
+            queryParams.append('name', name.trim());
+        }
+
         // Call the enhanced API endpoint that handles pagination, filtering, and sorting server-side
         const url = `${BASE_URL}/people/?${queryParams.toString()}`;
+        console.log('People API URL:', url);
+        console.log('People API params:', params);
         const response = await this.fetchData<PeopleResponse>(url);
         console.log('SWAPI response:', response);
         return response;
@@ -92,6 +101,7 @@ export class StarWarsApiClient {
         filterValue?: string;
         sortBy?: string;
         sortOrder?: string;
+        name?: string;
     }): Promise<PlanetsResponse> {
         const {
             page = 1,
@@ -99,7 +109,8 @@ export class StarWarsApiClient {
             filterField,
             filterValue,
             sortBy,
-            sortOrder = 'asc'
+            sortOrder = 'asc',
+            name
         } = params;
 
         // Build query parameters for the API
@@ -117,7 +128,14 @@ export class StarWarsApiClient {
             queryParams.append('sort_order', sortOrder);
         }
 
+        // Add name parameter for search
+        if (name && name.trim()) {
+            queryParams.append('name', name.trim());
+        }
+
         const url = `${BASE_URL}/planets/?${queryParams.toString()}`;
+        console.log('Planets API URL:', url);
+        console.log('Planets API params:', params);
         return this.fetchData<PlanetsResponse>(url);
     }
 
