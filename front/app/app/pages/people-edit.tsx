@@ -10,6 +10,7 @@ export default function PeopleEdit() {
     const [person, setPerson] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [saveAsCopyLoading, setSaveAsCopyLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -42,6 +43,21 @@ export default function PeopleEdit() {
             setError("Failed to save changes");
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleSaveAsCopy = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        setSaveAsCopyLoading(true);
+        try {
+            // Create a copy of the person data without the id
+            const { id: _, ...personData } = person;
+            const newPerson = await starWarsApiClient.createPerson(personData);
+            navigate(`/people/${newPerson.id}`);
+        } catch (err) {
+            setError("Failed to create copy");
+        } finally {
+            setSaveAsCopyLoading(false);
         }
     };
 
@@ -78,7 +94,9 @@ export default function PeopleEdit() {
             backLink={{ to: `/people/${id}`, label: "Back to Detail" }}
             onChange={handleChange}
             onSubmit={handleSubmit}
+            onSaveAsCopy={handleSaveAsCopy}
             loading={saving}
+            saveAsCopyLoading={saveAsCopyLoading}
             sections={[
                 {
                     title: "Physical Characteristics",

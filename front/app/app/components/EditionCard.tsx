@@ -21,11 +21,13 @@ interface EditionCardProps {
     backLink?: { to: string; label: string };
     onChange: (name: string, value: any) => void;
     onSubmit: (e: React.FormEvent) => void;
+    onSaveAsCopy?: (e: React.MouseEvent) => void;
     submitLabel?: string;
     loading?: boolean;
+    saveAsCopyLoading?: boolean;
 }
 
-export default function EditionCard({ title, sections, backLink, onChange, onSubmit, submitLabel = "Save", loading }: EditionCardProps) {
+export default function EditionCard({ title, sections, backLink, onChange, onSubmit, onSaveAsCopy, submitLabel = "Save", loading, saveAsCopyLoading }: EditionCardProps) {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
@@ -73,7 +75,17 @@ export default function EditionCard({ title, sections, backLink, onChange, onSub
                                 </div>
                             ))}
                         </div>
-                        <div className="mt-8 flex justify-end">
+                        <div className="mt-8 flex justify-end space-x-4">
+                            {onSaveAsCopy && (
+                                <button
+                                    type="button"
+                                    onClick={onSaveAsCopy}
+                                    className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded shadow disabled:opacity-50"
+                                    disabled={saveAsCopyLoading || loading}
+                                >
+                                    {saveAsCopyLoading ? "Creating..." : "Save as Copy"}
+                                </button>
+                            )}
                             <button
                                 type="submit"
                                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded shadow disabled:opacity-50"

@@ -10,6 +10,7 @@ export default function PlanetsEdit() {
     const [planet, setPlanet] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [saveAsCopyLoading, setSaveAsCopyLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -42,6 +43,21 @@ export default function PlanetsEdit() {
             setError("Failed to save changes");
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleSaveAsCopy = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        setSaveAsCopyLoading(true);
+        try {
+            // Create a copy of the planet data without the id
+            const { id: _, ...planetData } = planet;
+            const newPlanet = await starWarsApiClient.createPlanet(planetData);
+            navigate(`/planets/${newPlanet.id}`);
+        } catch (err) {
+            setError("Failed to create copy");
+        } finally {
+            setSaveAsCopyLoading(false);
         }
     };
 
@@ -78,7 +94,9 @@ export default function PlanetsEdit() {
             backLink={{ to: `/planets/${id}`, label: "Back to Detail" }}
             onChange={handleChange}
             onSubmit={handleSubmit}
+            onSaveAsCopy={handleSaveAsCopy}
             loading={saving}
+            saveAsCopyLoading={saveAsCopyLoading}
             sections={[
                 {
                     title: "Physical Characteristics",
