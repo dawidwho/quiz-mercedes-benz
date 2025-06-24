@@ -7,8 +7,6 @@ export function Navigation() {
     const menuItems = [
         { name: "People", path: "/people" },
         { name: "Planets", path: "/planets" },
-        { name: "My People", path: "/my-people" },
-        { name: "My Planets", path: "/my-planets" },
     ];
 
     const isActive = (path: string) => {

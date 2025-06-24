@@ -8,6 +8,4 @@ export default [
   route("planets", "pages/planets.tsx"),
   route("planets/:id", "pages/planets-detail.tsx"),
   route("planets/:id/edit", "pages/planets-edit.tsx"),
-  route("my-people", "pages/my-people.tsx"),
-  route("my-planets", "pages/my-planets.tsx"),
 ] satisfies RouteConfig;
