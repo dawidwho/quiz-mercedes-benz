@@ -4,7 +4,7 @@ CRUD operations for database models.
 
 from typing import List, Optional, Type, TypeVar, Tuple
 from sqlalchemy.orm import Session
-from sqlalchemy import select, func
+from sqlalchemy import select, func, desc, asc
 
 from app.db.base import Base
 
@@ -34,6 +34,32 @@ class CRUDBase:
     ) -> Tuple[List[ModelType], int]:
         """Get multiple records with pagination and total count."""
         items = db.query(self.model).offset(skip).limit(limit).all()
+        total = db.query(func.count(self.model.id)).scalar()
+        return items, total
+
+    def get_multi_paginated_with_sort(
+        self,
+        db: Session,
+        skip: int = 0,
+        limit: int = 100,
+        sort_by: Optional[str] = None,
+        sort_order: str = "asc",
+    ) -> Tuple[List[ModelType], int]:
+        """Get multiple records with pagination, sorting and total count."""
+        query = db.query(self.model)
+
+        # Apply sorting if sort_by is provided
+        if sort_by and hasattr(self.model, sort_by):
+            sort_column = getattr(self.model, sort_by)
+            if sort_order.lower() == "desc":
+                query = query.order_by(desc(sort_column))
+            else:
+                query = query.order_by(asc(sort_column))
+        else:
+            # Default sorting by ID
+            query = query.order_by(asc(self.model.id))
+
+        items = query.offset(skip).limit(limit).all()
         total = db.query(func.count(self.model.id)).scalar()
         return items, total
 

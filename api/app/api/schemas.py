@@ -4,8 +4,16 @@ Pydantic schemas for API requests and responses.
 
 from pydantic import BaseModel
 from typing import Optional, List, Generic, TypeVar
+from enum import Enum
 
 T = TypeVar("T")
+
+
+class SortOrder(str, Enum):
+    """Sort order enumeration."""
+
+    ASC = "asc"
+    DESC = "desc"
 
 
 class PaginationParams(BaseModel):
@@ -13,6 +21,13 @@ class PaginationParams(BaseModel):
 
     page: int = 1
     size: int = 10
+
+
+class SortParams(BaseModel):
+    """Sorting parameters for requests."""
+
+    sort_by: Optional[str] = None
+    sort_order: SortOrder = SortOrder.ASC
 
 
 class PaginatedResponse(BaseModel, Generic[T]):

@@ -9,12 +9,20 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.1.2",
+    "@mui/styled-engine-sc": "^7.1.1",
+    "@mui/x-data-grid": "^7.29.6",
     "@react-router/node": "^7.5.3",
     "@react-router/serve": "^7.5.3",
     "isbot": "^5.1.27",
+    "prop-types": "^15.8.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router": "^7.5.3"
+    "react-router": "^7.5.3",
+    "styled-components": "^6.1.19"
   },
   "devDependencies": {
     "@react-router/dev": "^7.5.3",

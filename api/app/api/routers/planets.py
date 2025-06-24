@@ -19,11 +19,19 @@ planets_crud = crud.CRUDBase(PlanetsModel)
 def read_planets(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Items per page"),
+    sort_by: str = Query(
+        None, description="Field to sort by (name, diameter, population, etc.)"
+    ),
+    sort_order: schemas.SortOrder = Query(
+        schemas.SortOrder.ASC, description="Sort order (asc or desc)"
+    ),
     db: Session = Depends(deps.get_db),
 ):
-    """Retrieve planets with pagination."""
+    """Retrieve planets with pagination and sorting."""
     skip = (page - 1) * size
-    planets, total = planets_crud.get_multi_paginated(db, skip=skip, limit=size)
+    planets, total = planets_crud.get_multi_paginated_with_sort(
+        db, skip=skip, limit=size, sort_by=sort_by, sort_order=sort_order
+    )
 
     pages = (total + size - 1) // size  # Calculate total pages
     has_next = page < pages

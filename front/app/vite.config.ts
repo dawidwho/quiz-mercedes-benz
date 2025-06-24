@@ -5,4 +5,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+  optimizeDeps: {
+    include: ['@mui/x-data-grid', '@mui/material', '@emotion/react', '@emotion/styled']
+  }
 });

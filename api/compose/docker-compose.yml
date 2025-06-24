@@ -19,6 +19,7 @@ services:
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
       - CORS_ORIGINS=${CORS_ORIGINS}
       - STAR_WARS_API_URL=${STAR_WARS_API_URL}
+      - LOAD_SWAPI_DATA=${LOAD_SWAPI_DATA:-false}
     volumes:
       - ../app:/app/app
     depends_on:

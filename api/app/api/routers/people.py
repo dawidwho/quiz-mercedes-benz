@@ -19,11 +19,19 @@ people_crud = crud.CRUDBase(PeopleModel)
 def read_people(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Items per page"),
+    sort_by: str = Query(
+        None, description="Field to sort by (name, height, mass, etc.)"
+    ),
+    sort_order: schemas.SortOrder = Query(
+        schemas.SortOrder.ASC, description="Sort order (asc or desc)"
+    ),
     db: Session = Depends(deps.get_db),
 ):
-    """Retrieve people with pagination."""
+    """Retrieve people with pagination and sorting."""
     skip = (page - 1) * size
-    people, total = people_crud.get_multi_paginated(db, skip=skip, limit=size)
+    people, total = people_crud.get_multi_paginated_with_sort(
+        db, skip=skip, limit=size, sort_by=sort_by, sort_order=sort_order
+    )
 
     pages = (total + size - 1) // size  # Calculate total pages
     has_next = page < pages
