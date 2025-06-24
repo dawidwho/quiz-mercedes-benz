@@ -4,8 +4,8 @@ import type { GridColDef } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import { CircularProgress, Alert, TextField, Box, InputAdornment, IconButton } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useNavigate } from "react-router";
-import { formatDate } from "../helpers/formatters";
 
 // Dynamic import to avoid SSR issues
 const DataGrid = lazy(() => import("@mui/x-data-grid").then(module => ({ default: module.DataGrid })));
@@ -72,9 +72,37 @@ export default function StarWarsTable({
         }
     }, [handleSearchSubmit]);
 
-    const handleRowClick = (params: any) => {
-        navigate(`/${detailRouteType}/${params.row.id}`);
+    const handleViewDetails = (id: string) => {
+        navigate(`/${detailRouteType}/${id}`);
     };
+
+    // Create actions column
+    const actionsColumn: GridColDef = {
+        field: 'actions',
+        headerName: 'Actions',
+        width: 120,
+        sortable: false,
+        filterable: false,
+        renderCell: (params) => (
+            <IconButton
+                onClick={() => handleViewDetails(params.row.id)}
+                sx={{
+                    color: 'inherit',
+                    '&:hover': {
+                        color: 'inherit',
+                    },
+                }}
+            >
+                <VisibilityIcon />
+            </IconButton>
+        ),
+    };
+
+    // Insert actions column as the first column
+    const columnsWithActions = [
+        actionsColumn, // Actions column first
+        ...columns // All other columns
+    ];
 
     if (loading) {
         return (
@@ -173,7 +201,7 @@ export default function StarWarsTable({
                     <Suspense fallback={<div>Loading...</div>}>
                         <DataGrid
                             rows={data}
-                            columns={columns}
+                            columns={columnsWithActions}
                             paginationModel={paginationModel}
                             onPaginationModelChange={onPaginationModelChange}
                             filterModel={filterModel}
@@ -188,7 +216,6 @@ export default function StarWarsTable({
                             checkboxSelection
                             sx={{ border: 0 }}
                             getRowHeight={() => 'auto'}
-                            onRowClick={handleRowClick}
                         />
                     </Suspense>
                 </Paper>
