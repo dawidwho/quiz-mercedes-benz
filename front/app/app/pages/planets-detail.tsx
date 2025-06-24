@@ -1,12 +1,13 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, Link, useNavigate } from "react-router";
 import { starWarsApiClient } from "../services/apiClientStarWars";
 import { formatDate } from "../helpers/formatters";
 import DetailCard from "../components/DetailCard";
 
 export default function PlanetsDetail() {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
     const [planet, setPlanet] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -55,31 +56,45 @@ export default function PlanetsDetail() {
     }
 
     return (
-        <DetailCard
-            title={planet.name}
-            backLink={{ to: "/planets", label: "Back to Planets" }}
-            sections={[
-                {
-                    title: "Physical Characteristics",
-                    items: [
-                        { label: "Diameter", value: `${planet.diameter} km` },
-                        { label: "Rotation Period", value: `${planet.rotation_period} hours` },
-                        { label: "Orbital Period", value: `${planet.orbital_period} days` },
-                        { label: "Gravity", value: planet.gravity },
-                        { label: "Surface Water", value: `${planet.surface_water}%` },
-                    ],
-                },
-                {
-                    title: "Environmental Information",
-                    items: [
-                        { label: "Climate", value: planet.climate },
-                        { label: "Terrain", value: planet.terrain },
-                        { label: "Population", value: planet.population?.toLocaleString() || 'Unknown' },
-                        { label: "Created", value: formatDate(planet.created_at) },
-                        { label: "Updated", value: formatDate(planet.updated_at) },
-                    ],
-                },
-            ]}
-        />
+        <div className="container mx-auto px-4 py-8">
+            <div className="max-w-4xl mx-auto">
+                <div className="flex justify-between items-center mb-6">
+                    <Link to="/planets" className="inline-flex items-center text-blue-600 hover:text-blue-400 font-medium">
+                        ← Back to Planets
+                    </Link>
+                    <Link
+                        to={`/planets/${id}/edit`}
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded shadow"
+                    >
+                        Edit
+                    </Link>
+                </div>
+                <DetailCard
+                    title={planet.name}
+                    sections={[
+                        {
+                            title: "Physical Characteristics",
+                            items: [
+                                { label: "Diameter", value: `${planet.diameter} km` },
+                                { label: "Rotation Period", value: `${planet.rotation_period} hours` },
+                                { label: "Orbital Period", value: `${planet.orbital_period} days` },
+                                { label: "Gravity", value: planet.gravity },
+                                { label: "Surface Water", value: `${planet.surface_water}%` },
+                            ],
+                        },
+                        {
+                            title: "Environmental Information",
+                            items: [
+                                { label: "Climate", value: planet.climate },
+                                { label: "Terrain", value: planet.terrain },
+                                { label: "Population", value: planet.population?.toLocaleString() || 'Unknown' },
+                                { label: "Created", value: formatDate(planet.created_at) },
+                                { label: "Updated", value: formatDate(planet.updated_at) },
+                            ],
+                        },
+                    ]}
+                />
+            </div>
+        </div>
     );
 } 

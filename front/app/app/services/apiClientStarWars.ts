@@ -17,6 +17,25 @@ export class StarWarsApiClient {
         }
     }
 
+    private async updateData<T>(url: string, data: any): Promise<T> {
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error("Error updating data:", error);
+            throw error;
+        }
+    }
+
     async getPeople(params: {
         page?: number;
         size?: number;
@@ -61,6 +80,11 @@ export class StarWarsApiClient {
         return this.fetchData<Person>(url);
     }
 
+    async updatePerson(id: string, personData: Partial<Person>): Promise<Person> {
+        const url = `${BASE_URL}/people/${id}/`;
+        return this.updateData<Person>(url, personData);
+    }
+
     async getPlanets(params: {
         page?: number;
         size?: number;
@@ -100,6 +124,11 @@ export class StarWarsApiClient {
     async getPlanet(id: string): Promise<Planet> {
         const url = `${BASE_URL}/planets/${id}/`;
         return this.fetchData<Planet>(url);
+    }
+
+    async updatePlanet(id: string, planetData: Partial<Planet>): Promise<Planet> {
+        const url = `${BASE_URL}/planets/${id}/`;
+        return this.updateData<Planet>(url, planetData);
     }
 
     async searchPeople(query: string): Promise<PeopleResponse> {
