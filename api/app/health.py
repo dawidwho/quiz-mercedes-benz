@@ -1,5 +1,7 @@
 import httpx
 from typing import Dict, Any
+from sqlalchemy import text
+from app.db.session import SessionLocal
 
 
 async def check_basic_health() -> Dict[str, Any]:
@@ -10,9 +12,11 @@ async def check_basic_health() -> Dict[str, Any]:
 async def check_postgresql_health() -> Dict[str, Any]:
     """Check PostgreSQL database connection health"""
     try:
-        # Add your PostgreSQL connection check here
-        # Example with SQLAlchemy:
-        # await db.execute("SELECT 1")
+        db = SessionLocal()
+        # Execute a simple query to test the connection
+        result = db.execute(text("SELECT 1"))
+        result.fetchone()
+        db.close()
         return {"status": "connected"}
     except Exception as e:
         return {"status": "error", "message": str(e)}

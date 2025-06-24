@@ -27,7 +27,7 @@ run:
 
 test:
 	@echo "Running tests..."
-	# Add your test commands here
+	docker-compose -f compose/docker-compose.yml exec fastapi-app pytest app/tests/ -v
 
 clean:
 	docker-compose -f compose/docker-compose.yml down --rmi all --volumes --remove-orphans
