@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect, useState, useCallback } from "react";
 import type { GridColDef } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import { CircularProgress, Alert } from "@mui/material";
+import { useNavigate } from "react-router";
 import { formatDate } from "../helpers/formatters";
 
 // Dynamic import to avoid SSR issues
@@ -23,6 +24,7 @@ interface StarWarsTableProps {
     onPaginationModelChange: (model: any) => void;
     onFilterModelChange: (model: any) => void;
     onSortModelChange: (model: any) => void;
+    detailRouteType: 'people' | 'planets';
 }
 
 export default function StarWarsTable({
@@ -39,8 +41,15 @@ export default function StarWarsTable({
     sortModel,
     onPaginationModelChange,
     onFilterModelChange,
-    onSortModelChange
+    onSortModelChange,
+    detailRouteType
 }: StarWarsTableProps) {
+    const navigate = useNavigate();
+
+    const handleRowClick = (params: any) => {
+        navigate(`/${detailRouteType}/${params.row.id}`);
+    };
+
     if (loading) {
         return (
             <div className="container mx-auto px-4 py-8">
@@ -97,6 +106,7 @@ export default function StarWarsTable({
                             checkboxSelection
                             sx={{ border: 0 }}
                             getRowHeight={() => 'auto'}
+                            onRowClick={handleRowClick}
                         />
                     </Suspense>
                 </Paper>

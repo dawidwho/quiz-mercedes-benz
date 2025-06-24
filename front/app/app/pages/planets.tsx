@@ -134,6 +134,7 @@ export default function Planets() {
             onPaginationModelChange={handlePaginationModelChange}
             onFilterModelChange={handleFilterModelChange}
             onSortModelChange={handleSortModelChange}
+            detailRouteType="planets"
         />
     );
 } 

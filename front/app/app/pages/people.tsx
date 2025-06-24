@@ -139,6 +139,7 @@ export default function People() {
             onPaginationModelChange={handlePaginationModelChange}
             onFilterModelChange={handleFilterModelChange}
             onSortModelChange={handleSortModelChange}
+            detailRouteType="people"
         />
     );
 }
