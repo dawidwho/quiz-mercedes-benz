@@ -1,14 +1,10 @@
 import type { Route } from "./+types/planets";
 import * as React from "react";
-import { lazy, Suspense, useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import type { GridColDef } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
-import { CircularProgress, Alert } from "@mui/material";
 import { starWarsApiClient } from "../services/apiClientStarWars";
 import { formatDate } from "../helpers/formatters";
-
-// Dynamic import to avoid SSR issues
-const DataGrid = lazy(() => import("@mui/x-data-grid").then(module => ({ default: module.DataGrid })));
+import StarWarsTable from "../components/StarWarsTable";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -122,72 +118,22 @@ export default function Planets() {
         },
     ];
 
-    if (loading) {
-        return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="max-w-4xl mx-auto">
-                    <header className="mb-8">
-                        <h1 className="text-3xl font-bold text-white mb-4">Star Wars Planets</h1>
-                        <p className="text-gray-300 text-lg">
-                            Discover and learn about planets from the Star Wars universe
-                        </p>
-                    </header>
-                    <div className="flex justify-center items-center h-64">
-                        <CircularProgress />
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="max-w-4xl mx-auto">
-                    <header className="mb-8">
-                        <h1 className="text-3xl font-bold text-white mb-4">Star Wars Planets</h1>
-                        <p className="text-gray-300 text-lg">
-                            Discover and learn about planets from the Star Wars universe
-                        </p>
-                    </header>
-                    <Alert severity="error">{error}</Alert>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="max-w-4xl mx-auto">
-                <header className="mb-8">
-                    <h1 className="text-3xl font-bold text-white mb-4">Star Wars Planets</h1>
-                    <p className="text-gray-300 text-lg">
-                        Discover and learn about planets from the Star Wars universe
-                    </p>
-                </header>
-                <Paper sx={{ height: 600, width: '100%' }}>
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <DataGrid
-                            rows={planets}
-                            columns={columns}
-                            paginationModel={paginationModel}
-                            onPaginationModelChange={handlePaginationModelChange}
-                            filterModel={filterModel}
-                            onFilterModelChange={handleFilterModelChange}
-                            sortModel={sortModel}
-                            onSortModelChange={handleSortModelChange}
-                            pageSizeOptions={[15, 25, 50]}
-                            paginationMode="server"
-                            filterMode="server"
-                            sortingMode="server"
-                            rowCount={totalCount}
-                            checkboxSelection
-                            sx={{ border: 0 }}
-                            getRowHeight={() => 'auto'}
-                        />
-                    </Suspense>
-                </Paper>
-            </div>
-        </div>
+        <StarWarsTable
+            title="Star Wars Planets"
+            description="Discover and learn about planets from the Star Wars universe"
+            columns={columns}
+            dataFetcher={starWarsApiClient.getPlanets}
+            loading={loading}
+            error={error}
+            data={planets}
+            totalCount={totalCount}
+            paginationModel={paginationModel}
+            filterModel={filterModel}
+            sortModel={sortModel}
+            onPaginationModelChange={handlePaginationModelChange}
+            onFilterModelChange={handleFilterModelChange}
+            onSortModelChange={handleSortModelChange}
+        />
     );
 } 
