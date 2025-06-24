@@ -1,4 +1,4 @@
-.PHONY: help up down logs build run test clean docker-build docker-run docker-stop
+.PHONY: help up down logs build run test clean docker-build docker-run docker-stop shell
 
 help:
 	@echo 'Usage: make [target]'
@@ -32,5 +32,9 @@ test:
 	@echo "Running tests..."
 	cd app && npm run typecheck
 
+shell:
+	docker-compose -f compose/docker-compose.yml exec react-app /bin/sh
+
 clean:
+	docker-compose -f compose/docker-compose.yml down -v
 	docker-compose -f compose/docker-compose.yml down --rmi all --volumes --remove-orphans

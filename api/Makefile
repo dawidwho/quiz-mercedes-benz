@@ -1,4 +1,4 @@
-.PHONY: help up down logs build run test clean docker-build docker-run docker-stop
+.PHONY: help up down logs build run test clean docker-build docker-run docker-stop shell
 
 help:
 	@echo 'Usage: make [target]'
@@ -28,6 +28,9 @@ run:
 test:
 	@echo "Running tests..."
 	docker-compose -f compose/docker-compose.yml exec fastapi-app pytest app/tests/ -v
+
+shell:
+	docker-compose -f compose/docker-compose.yml exec fastapi-app /bin/bash
 
 clean:
 	docker-compose -f compose/docker-compose.yml down --rmi all --volumes --remove-orphans
