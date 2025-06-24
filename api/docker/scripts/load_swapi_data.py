@@ -86,6 +86,15 @@ class SWAPIDataLoader:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.session.close()
 
+    def check_if_people_table_has_data(self) -> bool:
+        """Check if the people table already has data."""
+        try:
+            count = self.session.query(People).count()
+            return count > 0
+        except Exception as e:
+            print(f"Error checking people table: {e}")
+            return False
+
     def fetch_all_pages(self, endpoint: str) -> List[Dict[str, Any]]:
         """Fetch all pages from a SWAPI endpoint."""
         all_data = []
@@ -145,6 +154,11 @@ class SWAPIDataLoader:
     def load_people(self):
         """Load people data from SWAPI."""
         print("\n=== Loading People Data ===")
+
+        # Check if people table already has data
+        if self.check_if_people_table_has_data():
+            print("People table already contains data. Skipping people data loading.")
+            return
 
         # Fetch people data from SWAPI
         swapi_people = self.fetch_all_pages("people")
