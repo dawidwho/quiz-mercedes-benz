@@ -20,14 +20,14 @@ Good luck and thank you again for your time!
 
 ## Acceptance Criteria
 
-- [ ] 1. **Data Display**
+- [x] 1. **Data Display**
 
-  - [ ] Web application reads and displays information from SWAPI (`https://swapi.co/`) in a web browser.
-  - [ ] Two separate tables: **People** and **Planets**.
+  - [x] Web application reads and displays information from SWAPI (`https://swapi.co/`) in a web browser.
+  - [x] Two separate tables: **People** and **Planets**.
 
-- [ ] 2. **Pagination**
+- [x] 2. **Pagination**
 
-  - [ ] Each table is paginated, displaying **15 items per page**.
+  - [x] Each table is paginated, displaying **15 items per page**.
 
 - [ ] 3. **Search**
 
@@ -39,14 +39,14 @@ Good luck and thank you again for your time!
   - [ ] Allow sorting by **name** and **created** fields, in both ascending and descending order.
   - [ ] Sorting mechanism designed following the _Open‑Closed Principle_ and implemented in the **backend**.
 
-- [ ] 5. **Technology Stack**
+- [x] 5. **Technology Stack**
 
-  - [ ] **Frontend:** React (preferred), Angular, or Vue.
-  - [ ] **Backend:** Python using FastAPI or Flask.
+  - [x] **Frontend:** React (preferred), Angular, or Vue.
+  - [x] **Backend:** Python using FastAPI or Flask.
 
 - [ ] 6. **Containerization**
 
-  - [ ] Use **Docker** to containerize both backend and frontend.
+  - [x] Use **Docker** to containerize both backend and frontend.
   - [ ] Provide a **Docker Compose** setup that runs the system on port **6969**.
 
 ---
