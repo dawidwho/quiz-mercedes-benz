@@ -3,7 +3,28 @@ Pydantic schemas for API requests and responses.
 """
 
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Generic, TypeVar
+
+T = TypeVar("T")
+
+
+class PaginationParams(BaseModel):
+    """Pagination parameters for requests."""
+
+    page: int = 1
+    size: int = 10
+
+
+class PaginatedResponse(BaseModel, Generic[T]):
+    """Generic paginated response schema."""
+
+    items: List[T]
+    total: int
+    page: int
+    size: int
+    pages: int
+    has_next: bool
+    has_prev: bool
 
 
 class BaseSchema(BaseModel):

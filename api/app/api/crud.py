@@ -2,9 +2,9 @@
 CRUD operations for database models.
 """
 
-from typing import List, Optional, Type, TypeVar
+from typing import List, Optional, Type, TypeVar, Tuple
 from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 from app.db.base import Base
 
@@ -28,6 +28,14 @@ class CRUDBase:
     ) -> List[ModelType]:
         """Get multiple records with pagination."""
         return db.query(self.model).offset(skip).limit(limit).all()
+
+    def get_multi_paginated(
+        self, db: Session, skip: int = 0, limit: int = 100
+    ) -> Tuple[List[ModelType], int]:
+        """Get multiple records with pagination and total count."""
+        items = db.query(self.model).offset(skip).limit(limit).all()
+        total = db.query(func.count(self.model.id)).scalar()
+        return items, total
 
     def create(self, db: Session, obj_in) -> ModelType:
         """Create a new record."""

@@ -3,7 +3,7 @@ People router with CRUD endpoints.
 """
 
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
 from app.api import deps, schemas, crud
@@ -15,11 +15,29 @@ router = APIRouter(prefix="/people", tags=["people"])
 people_crud = crud.CRUDBase(PeopleModel)
 
 
-@router.get("/", response_model=List[schemas.People])
-def read_people(skip: int = 0, limit: int = 100, db: Session = Depends(deps.get_db)):
-    """Retrieve people."""
-    people = people_crud.get_multi(db, skip=skip, limit=limit)
-    return people
+@router.get("/", response_model=schemas.PaginatedResponse[schemas.People])
+def read_people(
+    page: int = Query(1, ge=1, description="Page number"),
+    size: int = Query(10, ge=1, le=100, description="Items per page"),
+    db: Session = Depends(deps.get_db),
+):
+    """Retrieve people with pagination."""
+    skip = (page - 1) * size
+    people, total = people_crud.get_multi_paginated(db, skip=skip, limit=size)
+
+    pages = (total + size - 1) // size  # Calculate total pages
+    has_next = page < pages
+    has_prev = page > 1
+
+    return schemas.PaginatedResponse(
+        items=people,
+        total=total,
+        page=page,
+        size=size,
+        pages=pages,
+        has_next=has_next,
+        has_prev=has_prev,
+    )
 
 
 @router.post("/", response_model=schemas.People, status_code=status.HTTP_201_CREATED)
