@@ -98,6 +98,113 @@ All configuration is handled through environment variables in the `.env` file:
 - `POST /api/simulate-ai-insight/` - Generate AI insights for people or planets
 - `GET /api/simulate-ai-insight/` - Generate AI insights for people or planets (GET version)
 
+### Monitoring and Logging
+
+The application includes comprehensive monitoring and logging capabilities for tracking search and sort operations.
+
+#### Monitoring Endpoints
+
+- `GET /api/monitoring/metrics` - Get all monitoring metrics
+- `GET /api/monitoring/metrics/search` - Get search-specific metrics
+- `GET /api/monitoring/metrics/sort` - Get sort-specific metrics
+- `GET /api/monitoring/health` - Get monitoring service health status
+
+#### Logged Events
+
+The system automatically logs the following events:
+
+1. **Search Operations**:
+
+   - Search parameters used
+   - Results count and total count
+   - Execution time
+   - Resource type (people/planets)
+   - Page and size information
+
+2. **Sort Operations**:
+
+   - Sort field and order
+   - Results count and total count
+   - Execution time
+   - Resource type (people/planets)
+   - Page and size information
+
+3. **API Requests**:
+
+   - HTTP method and path
+   - Status code
+   - Execution time
+   - Client IP and user agent
+
+4. **Errors**:
+   - Error type and message
+   - Request context
+   - Stack trace information
+
+#### Metrics Tracking
+
+The monitoring system tracks:
+
+- **Search Metrics**:
+
+  - Total number of searches
+  - Searches by resource type (people/planets)
+  - Popular search terms
+  - Average execution time
+
+- **Sort Metrics**:
+  - Total number of sorts
+  - Sorts by resource type (people/planets)
+  - Popular sort fields
+  - Sort order distribution (asc/desc)
+  - Average execution time
+
+#### Example Usage
+
+```bash
+# Get all metrics
+curl http://localhost:8000/api/monitoring/metrics
+
+# Get search metrics only
+curl http://localhost:8000/api/monitoring/metrics/search
+
+# Get sort metrics only
+curl http://localhost:8000/api/monitoring/metrics/sort
+
+# Check monitoring health
+curl http://localhost:8000/api/monitoring/health
+```
+
+#### Log Output
+
+The application uses structured logging with loguru. Logs are written to both:
+
+- Console (stdout)
+- File (`app.log` with rotation)
+
+Example log output:
+
+```
+INFO     Search event - app.core.monitoring:log_search_event:89
+         event_type=search
+         event_data={'event_type': 'search', 'timestamp': '2024-01-15T10:30:00', 'resource_type': 'people', 'search_params': {'name': 'Luke'}, 'results_count': 1, 'total_count': 1, 'page': 1, 'size': 10, 'execution_time_ms': 45.2}
+         metrics={'total_searches': 5, 'searches_by_resource': {'people': 3, 'planets': 2}, 'popular_search_terms': {'name:luke': 2}, 'average_execution_time': 42.1}
+```
+
+#### Testing Monitoring
+
+Run the monitoring test script to verify functionality:
+
+```bash
+python test_monitoring.py
+```
+
+This script will:
+
+1. Perform sample search and sort operations
+2. Test all monitoring endpoints
+3. Display metrics and health information
+
 ### AI Insights Endpoint
 
 The `/api/simulate-ai-insight/` endpoint simulates AI-generated descriptions for people and planets from the Star Wars universe.

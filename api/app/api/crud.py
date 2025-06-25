@@ -2,6 +2,8 @@
 CRUD operations for database models.
 """
 
+import time
+import logging
 from typing import List, Optional, Type, TypeVar, Tuple
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func, desc, asc, or_
@@ -9,7 +11,9 @@ from sqlalchemy import select, func, desc, asc, or_
 from app.db.base import Base
 from app.api.sorting import sort_factory
 from app.api.schemas import SortField, SortOrder
+from app.core.monitoring import log_search_operation, log_sort_operation
 
+logger = logging.getLogger(__name__)
 ModelType = TypeVar("ModelType", bound=Base)
 
 
@@ -48,6 +52,8 @@ class CRUDBase:
         sort_order: SortOrder = SortOrder.ASC,
     ) -> Tuple[List[ModelType], int]:
         """Get multiple records with pagination, sorting and total count using strategy pattern."""
+        start_time = time.time()
+
         query = db.query(self.model)
 
         # Apply sorting using the strategy pattern
@@ -59,6 +65,30 @@ class CRUDBase:
 
         items = query.offset(skip).limit(limit).all()
         total = db.query(func.count(self.model.id)).scalar()
+
+        # Calculate execution time and log sort operation
+        execution_time = (time.time() - start_time) * 1000
+
+        # Determine resource type based on model
+        resource_type = self._get_resource_type()
+
+        # Log the sort operation
+        if sort_by:
+            log_sort_operation(
+                resource_type=resource_type,
+                sort_field=sort_by.value if hasattr(sort_by, "value") else str(sort_by),
+                sort_order=(
+                    sort_order.value
+                    if hasattr(sort_order, "value")
+                    else str(sort_order)
+                ),
+                results_count=len(items),
+                total_count=total,
+                page=(skip // limit) + 1,
+                size=limit,
+                execution_time_ms=execution_time,
+            )
+
         return items, total
 
     def get_multi_paginated_with_search(
@@ -71,6 +101,8 @@ class CRUDBase:
         search_params: Optional[dict] = None,
     ) -> Tuple[List[ModelType], int]:
         """Get multiple records with pagination, sorting, search and total count."""
+        start_time = time.time()
+
         query = db.query(self.model)
 
         # Apply search filters
@@ -98,6 +130,41 @@ class CRUDBase:
 
         # Apply pagination
         items = query.offset(skip).limit(limit).all()
+
+        # Calculate execution time
+        execution_time = (time.time() - start_time) * 1000
+
+        # Determine resource type based on model
+        resource_type = self._get_resource_type()
+
+        # Log search operation if search parameters were provided
+        if search_params:
+            log_search_operation(
+                resource_type=resource_type,
+                search_params=search_params,
+                results_count=len(items),
+                total_count=total,
+                page=(skip // limit) + 1,
+                size=limit,
+                execution_time_ms=execution_time,
+            )
+
+        # Log sort operation if sorting was applied
+        if sort_by:
+            log_sort_operation(
+                resource_type=resource_type,
+                sort_field=sort_by.value if hasattr(sort_by, "value") else str(sort_by),
+                sort_order=(
+                    sort_order.value
+                    if hasattr(sort_order, "value")
+                    else str(sort_order)
+                ),
+                results_count=len(items),
+                total_count=total,
+                page=(skip // limit) + 1,
+                size=limit,
+                execution_time_ms=execution_time,
+            )
 
         return items, total
 
@@ -132,3 +199,13 @@ class CRUDBase:
         db.delete(obj)
         db.commit()
         return obj
+
+    def _get_resource_type(self) -> str:
+        """Determine the resource type based on the model."""
+        model_name = self.model.__name__.lower()
+        if "people" in model_name:
+            return "people"
+        elif "planets" in model_name:
+            return "planets"
+        else:
+            return model_name

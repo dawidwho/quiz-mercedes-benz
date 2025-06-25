@@ -8,7 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.logging import setup_logging
-from app.api.routers import people, planets, ai_insights
+from app.core.middleware import MonitoringMiddleware
+from app.api.routers import people, planets, ai_insights, monitoring
 from app.health import get_health_status
 from app.db.init_db import init_db
 
@@ -25,6 +26,9 @@ app = FastAPI(
     docs_url=f"{settings.API_V1_STR}/docs",
     redoc_url=f"{settings.API_V1_STR}/redoc",
 )
+
+# Add monitoring middleware
+app.add_middleware(MonitoringMiddleware)
 
 # Configure CORS
 app.add_middleware(
@@ -73,6 +77,7 @@ async def health_check():
 app.include_router(people.router, prefix=settings.API_V1_STR)
 app.include_router(planets.router, prefix=settings.API_V1_STR)
 app.include_router(ai_insights.router, prefix=settings.API_V1_STR)
+app.include_router(monitoring.router, prefix=settings.API_V1_STR)
 
 
 if __name__ == "__main__":

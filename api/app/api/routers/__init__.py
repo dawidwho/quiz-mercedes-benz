@@ -1,2 +1,2 @@
 # Routers package
-from . import people, planets, ai_insights
+from . import people, planets, ai_insights, monitoring

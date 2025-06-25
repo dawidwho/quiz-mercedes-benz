@@ -56,7 +56,7 @@ Good luck and thank you again for your time!
 > _These requirements are not mandatory. Not implementing them will not discard you from the hiring process nor reduce points. If implemented, they must work as expected; otherwise, non-working features will not be considered._
 
 - [x] Add a mock endpoint `/simulate-ai-insight` that, given a person or planet name, returns a generated description (fake AI output).
-- [ ] Add basic logging and/or monitoring to the backend (e.g., log search/sort events).
+- [x] Add basic logging and/or monitoring to the backend (e.g., log search/sort events).
 - [x] Use environment variables to prepare the system for deployment on Azure, AWS, or GCP.
 - [ ] Add a basic frontend loading state and error display.
 
