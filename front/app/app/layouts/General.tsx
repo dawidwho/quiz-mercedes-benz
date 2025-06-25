@@ -17,7 +17,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </head>
             <body className="bg-gray-950 text-white min-h-screen">
                 <Navigation />
-                <main className="min-h-screen">
+                <main>
                     {children}
                 </main>
                 <ScrollRestoration />
