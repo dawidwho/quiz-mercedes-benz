@@ -110,6 +110,12 @@ export default function People() {
         setPaginationModel(prev => ({ ...prev, page: 0 }));
     };
 
+    const handleRetry = () => {
+        setError(null);
+        setLoading(true);
+        loadPeople();
+    };
+
     const columns: GridColDef[] = [
         { field: 'name', headerName: 'Name', width: 200, filterable: true },
         { field: 'height', headerName: 'Height (cm)', width: 120, type: 'number', filterable: true },
@@ -153,6 +159,7 @@ export default function People() {
             onSortModelChange={handleSortModelChange}
             onSearchChange={handleSearchChange}
             detailRouteType="people"
+            onRetry={handleRetry}
         />
     );
 }

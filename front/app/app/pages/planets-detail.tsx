@@ -4,6 +4,8 @@ import { useParams, Link, useNavigate } from "react-router";
 import { starWarsApiClient } from "../services/apiClientStarWars";
 import { formatDate } from "../helpers/formatters";
 import DetailCard from "../components/DetailCard";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorDisplay from "../components/ErrorDisplay";
 
 export default function PlanetsDetail() {
     const { id } = useParams<{ id: string }>();
@@ -12,19 +14,21 @@ export default function PlanetsDetail() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const loadPlanet = async () => {
+        if (!id) return;
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await starWarsApiClient.getPlanet(id);
+            setPlanet(data);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred while loading the planet');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const loadPlanet = async () => {
-            if (!id) return;
-            try {
-                setLoading(true);
-                const data = await starWarsApiClient.getPlanet(id);
-                setPlanet(data);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'An error occurred');
-            } finally {
-                setLoading(false);
-            }
-        };
         loadPlanet();
     }, [id]);
 
@@ -32,9 +36,10 @@ export default function PlanetsDetail() {
         return (
             <div className="container mx-auto px-4 py-8">
                 <div className="max-w-4xl mx-auto">
-                    <div className="flex justify-center items-center h-64">
-                        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
-                    </div>
+                    <Link to="/planets" className="inline-flex items-center mb-6 text-blue-600 hover:text-blue-400 font-medium">
+                        ← Back to Planets
+                    </Link>
+                    <LoadingSpinner message="Loading planet details..." />
                 </div>
             </div>
         );
@@ -44,12 +49,13 @@ export default function PlanetsDetail() {
         return (
             <div className="container mx-auto px-4 py-8">
                 <div className="max-w-4xl mx-auto">
-                    <a href="/planets" className="inline-flex items-center mb-6 text-blue-600 hover:text-blue-400 font-medium">
+                    <Link to="/planets" className="inline-flex items-center mb-6 text-blue-600 hover:text-blue-400 font-medium">
                         ← Back to Planets
-                    </a>
-                    <div className="bg-red-500 text-white p-4 rounded">
-                        {error || 'Planet not found'}
-                    </div>
+                    </Link>
+                    <ErrorDisplay
+                        error={error || 'Planet not found'}
+                        onRetry={loadPlanet}
+                    />
                 </div>
             </div>
         );

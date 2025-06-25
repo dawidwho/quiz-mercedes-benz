@@ -104,6 +104,12 @@ export default function Planets() {
         setPaginationModel(prev => ({ ...prev, page: 0 }));
     };
 
+    const handleRetry = () => {
+        setError(null);
+        setLoading(true);
+        loadPlanets();
+    };
+
     const columns: GridColDef[] = [
         { field: 'name', headerName: 'Name', width: 150, filterable: true },
         { field: 'rotation_period', headerName: 'Rotation Period', width: 140, type: 'number', filterable: true },
@@ -148,6 +154,7 @@ export default function Planets() {
             onSortModelChange={handleSortModelChange}
             onSearchChange={handleSearchChange}
             detailRouteType="planets"
+            onRetry={handleRetry}
         />
     );
 } 

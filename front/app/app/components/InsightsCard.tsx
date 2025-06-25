@@ -1,6 +1,8 @@
 import { useState } from "react";
 import type { AIInsightResponse } from "../models/insights";
 import { insightsApiClient } from "../services/apiClientInsights";
+import LoadingSpinner from "./LoadingSpinner";
+import ErrorDisplay from "./ErrorDisplay";
 
 interface InsightsCardProps {
     entityType: 'people' | 'planets';
@@ -75,8 +77,19 @@ export function InsightsCard({ entityType, entityName, onInsightGenerated }: Ins
             </div>
 
             {error && (
-                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
-                    <p className="text-red-800">{error}</p>
+                <div className="mb-4">
+                    <ErrorDisplay
+                        error={error}
+                        onRetry={generateInsight}
+                        showRetry={!!entityName.trim()}
+                        severity="error"
+                    />
+                </div>
+            )}
+
+            {loading && (
+                <div className="mb-4">
+                    <LoadingSpinner message="Generating AI insight..." size={32} />
                 </div>
             )}
 
@@ -112,7 +125,7 @@ export function InsightsCard({ entityType, entityName, onInsightGenerated }: Ins
                 </div>
             )}
 
-            {!insight && !loading && (
+            {!insight && !loading && !error && (
                 <div className="text-center py-8 text-gray-500">
                     <div className="mb-4">
                         <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

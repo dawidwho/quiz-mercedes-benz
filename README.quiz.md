@@ -58,7 +58,7 @@ Good luck and thank you again for your time!
 - [x] Add a mock endpoint `/simulate-ai-insight` that, given a person or planet name, returns a generated description (fake AI output).
 - [x] Add basic logging and/or monitoring to the backend (e.g., log search/sort events).
 - [x] Use environment variables to prepare the system for deployment on Azure, AWS, or GCP.
-- [ ] Add a basic frontend loading state and error display.
+- [x] Add a basic frontend loading state and error display.
 
 ---
 

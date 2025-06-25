@@ -6,6 +6,8 @@ import { CircularProgress, Alert, TextField, Box, InputAdornment, IconButton } f
 import SearchIcon from "@mui/icons-material/Search";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useNavigate } from "react-router";
+import LoadingSpinner from "./LoadingSpinner";
+import ErrorDisplay from "./ErrorDisplay";
 
 // Dynamic import to avoid SSR issues
 const DataGrid = lazy(() => import("@mui/x-data-grid").then(module => ({ default: module.DataGrid })));
@@ -27,6 +29,7 @@ interface StarWarsTableProps {
     onSortModelChange: (model: any) => void;
     onSearchChange?: (searchTerm: string) => void;
     detailRouteType: 'people' | 'planets';
+    onRetry?: () => void;
 }
 
 export default function StarWarsTable({
@@ -45,7 +48,8 @@ export default function StarWarsTable({
     onFilterModelChange,
     onSortModelChange,
     onSearchChange,
-    detailRouteType
+    detailRouteType,
+    onRetry
 }: StarWarsTableProps) {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
@@ -112,9 +116,7 @@ export default function StarWarsTable({
                         <h1 className="text-3xl font-bold text-white mb-4">{title}</h1>
                         <p className="text-gray-300 text-lg">{description}</p>
                     </header>
-                    <div className="flex justify-center items-center h-64">
-                        <CircularProgress />
-                    </div>
+                    <LoadingSpinner message={`Loading ${detailRouteType}...`} />
                 </div>
             </div>
         );
@@ -128,7 +130,10 @@ export default function StarWarsTable({
                         <h1 className="text-3xl font-bold text-white mb-4">{title}</h1>
                         <p className="text-gray-300 text-lg">{description}</p>
                     </header>
-                    <Alert severity="error">{error}</Alert>
+                    <ErrorDisplay
+                        error={error}
+                        onRetry={onRetry ? onRetry : () => { if (onSearchChange) { onSearchChange(searchTerm); } }}
+                    />
                 </div>
             </div>
         );
@@ -198,7 +203,7 @@ export default function StarWarsTable({
                 </Box>
 
                 <Paper sx={{ height: 700, width: '100%' }}>
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<LoadingSpinner message="Loading table..." />}>
                         <DataGrid
                             rows={data}
                             columns={columnsWithActions}
