@@ -15,9 +15,15 @@ Before running the application, you need to set up your environment variables fo
 
 ## Available Commands
 
-# Build both services
+# To run
 
-make build
+I like to use the following command: make clean && make up
+
+- Warning: Command make clean is a "down -v --remove-orphans", so it removes all not used volumes
+
+# Up
+
+make up
 
 # Run tests
 
