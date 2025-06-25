@@ -1,4 +1,4 @@
-import logoMercedes from "../assets/logo-mercedes.svg";
+import logoStarWars from "../assets/logo-starwars.svg";
 
 export function Welcome() {
   return (
@@ -7,8 +7,8 @@ export function Welcome() {
         <header className="flex flex-col items-center gap-9">
           <div className="w-[500px] max-w-[100vw] p-4">
             <img
-              src={logoMercedes}
-              alt="Mercedes-Benz"
+              src={logoStarWars}
+              alt="Star Wars"
               className="block w-full"
             />
           </div>
