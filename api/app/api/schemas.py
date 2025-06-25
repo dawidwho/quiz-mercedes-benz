@@ -156,3 +156,21 @@ class Planets(PlanetsBase):
     id: int
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+
+class AIInsightRequest(BaseModel):
+    """Schema for AI insight request."""
+
+    name: str
+    entity_type: str  # "people" or "planets"
+
+
+class AIInsightResponse(BaseModel):
+    """Schema for AI insight response."""
+
+    name: str
+    entity_type: str
+    insight: str
+    confidence_score: float
+    generated_at: datetime
+    model_version: str = "v1.0"

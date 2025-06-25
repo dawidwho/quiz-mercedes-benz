@@ -6,7 +6,9 @@ export function Navigation() {
 
     const menuItems = [
         { name: "People", path: "/people" },
+        { name: "People Insights", path: "/people-insights" },
         { name: "Planets", path: "/planets" },
+        { name: "Planets Insights", path: "/planets-insights" },
     ];
 
     const isActive = (path: string) => {

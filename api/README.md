@@ -85,6 +85,67 @@ All configuration is handled through environment variables in the `.env` file:
 - `GET /questions/{id}` - Get specific question
 - `POST /submit-answer` - Submit quiz answer
 - `GET /categories` - Get question categories
+- `GET /api/people/` - Get all people with pagination, sorting, and search
+- `GET /api/people/{id}` - Get specific person by ID
+- `POST /api/people/` - Create new person
+- `PUT /api/people/{id}` - Update person
+- `DELETE /api/people/{id}` - Delete person
+- `GET /api/planets/` - Get all planets with pagination, sorting, and search
+- `GET /api/planets/{id}` - Get specific planet by ID
+- `POST /api/planets/` - Create new planet
+- `PUT /api/planets/{id}` - Update planet
+- `DELETE /api/planets/{id}` - Delete planet
+- `POST /api/simulate-ai-insight/` - Generate AI insights for people or planets
+- `GET /api/simulate-ai-insight/` - Generate AI insights for people or planets (GET version)
+
+### AI Insights Endpoint
+
+The `/api/simulate-ai-insight/` endpoint simulates AI-generated descriptions for people and planets from the Star Wars universe.
+
+#### Usage
+
+**POST Method:**
+
+```bash
+curl -X POST "http://localhost:8000/api/simulate-ai-insight/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Luke Skywalker",
+    "entity_type": "people"
+  }'
+```
+
+**GET Method:**
+
+```bash
+curl "http://localhost:8000/api/simulate-ai-insight/?name=Luke%20Skywalker&entity_type=people"
+```
+
+#### Parameters
+
+- `name` (string, required): The name of the person or planet
+- `entity_type` (string, required): Either "people" or "planets"
+
+#### Response Format
+
+```json
+{
+  "name": "Luke Skywalker",
+  "entity_type": "people",
+  "insight": "Based on my analysis of Luke Skywalker's profile, this individual exhibits remarkable characteristics...",
+  "confidence_score": 0.87,
+  "generated_at": "2024-01-15T10:30:00",
+  "model_version": "v1.0"
+}
+```
+
+#### Features
+
+- **Contextual Insights**: Generates realistic AI-like descriptions based on actual data from the database
+- **Fallback Handling**: Provides generic insights for entities not found in the database
+- **Confidence Scoring**: Returns realistic confidence scores (0.75-0.98 for found entities, 0.3 for not found)
+- **Multiple Formats**: Supports both POST (JSON body) and GET (query parameters) methods
+- **Error Handling**: Validates entity types and provides appropriate error messages
 
 ### Available Make Commands
 

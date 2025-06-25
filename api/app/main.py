@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.logging import setup_logging
-from app.api.routers import people, planets
+from app.api.routers import people, planets, ai_insights
 from app.health import get_health_status
 from app.db.init_db import init_db
 
@@ -72,6 +72,7 @@ async def health_check():
 # Include API routers
 app.include_router(people.router, prefix=settings.API_V1_STR)
 app.include_router(planets.router, prefix=settings.API_V1_STR)
+app.include_router(ai_insights.router, prefix=settings.API_V1_STR)
 
 
 if __name__ == "__main__":
