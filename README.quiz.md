@@ -66,7 +66,7 @@ Good luck and thank you again for your time!
 
 - [x] The application works as defined in the **Acceptance Criteria**.
 - [ ] Source code of the web application provided.
-- [ ] A clear **README** file explaining how to run the application from scratch using Docker Compose.
+- [x] A clear **README** file explaining how to run the application from scratch using Docker Compose.
 - [ ] All integration tests are green.
 
 ---
