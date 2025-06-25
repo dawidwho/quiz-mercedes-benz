@@ -56,76 +56,74 @@ clean: api-clean front-clean
 # API targets
 api-up:
 	@echo "Starting API service..."
-	cd api && docker-compose -f compose/docker-compose.yml up -d
+	cd api && make up
 
 api-down:
 	@echo "Stopping API service..."
-	cd api && docker-compose -f compose/docker-compose.yml down
+	cd api && make down
 
 api-logs:
-	cd api && docker-compose -f compose/docker-compose.yml logs -f
+	cd api && make logs
 
 api-build:
 	@echo "Building API service..."
-	cd api && docker-compose -f compose/docker-compose.yml build
+	cd api && make build
 
 api-run:
-	cd api && docker-compose -f compose/docker-compose.yml up
+	cd api && make run
 
 api-dev:
 	@echo "Starting API in development mode..."
-	cd api && npm run dev
+	cd api && make dev
 
 api-test:
 	@echo "Running API tests..."
-	cd api && npm run test
+	cd api && make test
 
 api-shell:
-	cd api && docker-compose -f compose/docker-compose.yml exec api-service /bin/sh
+	cd api && make shell
 
 api-clean:
 	@echo "Cleaning up API service..."
-	cd api && docker-compose -f compose/docker-compose.yml down -v
-	cd api && docker-compose -f compose/docker-compose.yml down --rmi all --volumes --remove-orphans
+	cd api && make clean
 
 # Frontend targets
 front-up:
 	@echo "Starting frontend service..."
-	cd front && docker-compose -f compose/docker-compose.yml up -d
+	cd front && make up
 
 front-up-6969:
 	@echo "Starting frontend service on port 6969..."
-	cd front && FRONTEND_PORT=6969 docker-compose -f compose/docker-compose.yml up -d
+	cd front && FRONTEND_PORT=6969 make up
 
 front-down:
 	@echo "Stopping frontend service..."
-	cd front && docker-compose -f compose/docker-compose.yml down
+	cd front && make down
 
 front-logs:
-	cd front && docker-compose -f compose/docker-compose.yml logs -f
+	cd front && make logs
 
 front-build:
 	@echo "Building frontend service..."
-	cd front && docker-compose -f compose/docker-compose.yml build
+	cd front && make build
 
 front-run:
-	cd front && docker-compose -f compose/docker-compose.yml up
+	cd front && make run
 
 front-dev:
 	@echo "Starting frontend in development mode..."
-	cd front/app && npm run dev
+	cd front && make dev
 
 front-test:
 	@echo "Running frontend tests..."
-	cd front/app && npm run typecheck
+	cd front && make test
 
 front-shell:
-	cd front && docker-compose -f compose/docker-compose.yml exec react-app /bin/sh
+	cd front && make shell
 
 front-clean:
 	@echo "Cleaning up frontend service..."
-	cd front && docker-compose -f compose/docker-compose.yml down -v
-	cd front && docker-compose -f compose/docker-compose.yml down --rmi all --volumes --remove-orphans
+	cd front && make clean
 
 # Additional utility targets
 recreate: down up
