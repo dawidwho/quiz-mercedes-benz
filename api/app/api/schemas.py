@@ -2,7 +2,7 @@
 Pydantic schemas for API requests and responses.
 """
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional, List, Generic, TypeVar
 from enum import Enum
 from datetime import datetime
@@ -72,8 +72,7 @@ class PaginatedResponse(BaseModel, Generic[T]):
 class BaseSchema(BaseModel):
     """Base schema with common configuration."""
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
 
 
 class PeopleBase(BaseSchema):
@@ -174,3 +173,5 @@ class AIInsightResponse(BaseModel):
     confidence_score: float
     generated_at: datetime
     model_version: str = "v1.0"
+
+    model_config = ConfigDict(protected_namespaces=())

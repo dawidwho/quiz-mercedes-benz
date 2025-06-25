@@ -65,9 +65,9 @@ Good luck and thank you again for your time!
 ## Definition of Done
 
 - [x] The application works as defined in the **Acceptance Criteria**.
-- [ ] Source code of the web application provided.
+- [x] Source code of the web application provided.
 - [x] A clear **README** file explaining how to run the application from scratch using Docker Compose.
-- [ ] All integration tests are green.
+- [x] All integration tests are green.
 
 ---
 

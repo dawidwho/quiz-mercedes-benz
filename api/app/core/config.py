@@ -5,7 +5,7 @@ Configuration settings for the application.
 import os
 from typing import Optional, List
 from pydantic_settings import BaseSettings
-from pydantic import validator
+from pydantic import field_validator, ConfigDict
 
 
 class Settings(BaseSettings):
@@ -38,7 +38,8 @@ class Settings(BaseSettings):
     # External API settings
     STAR_WARS_API_URL: str = "https://swapi.dev/api/"
 
-    @validator("BACKEND_CORS_ORIGINS", pre=True)
+    @field_validator("BACKEND_CORS_ORIGINS", mode="before")
+    @classmethod
     def assemble_cors_origins(cls, v):
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
@@ -68,10 +69,12 @@ class Settings(BaseSettings):
         # Default to SQLite for local development
         return self.DATABASE_URL
 
-    class Config:
-        case_sensitive = True
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    model_config = ConfigDict(
+        case_sensitive=True,
+        env_file=".env",
+        env_file_encoding="utf-8",
+        protected_namespaces=(),  # Disable protected namespace warnings
+    )
 
 
 settings = Settings()

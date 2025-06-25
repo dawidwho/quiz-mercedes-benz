@@ -3,6 +3,7 @@ Main FastAPI application entry point.
 """
 
 import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -17,6 +18,26 @@ from app.db.init_db import init_db
 setup_logging()
 logger = logging.getLogger(__name__)
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan event handler for FastAPI application."""
+    # Startup
+    try:
+        logger.info(f"Connecting to database: {settings.database_url}")
+        init_db()
+        logger.info("Database initialization completed successfully!")
+    except Exception as e:
+        logger.error(f"Failed to initialize database: {e}")
+        logger.error("Application will start without database functionality.")
+        # Don't raise the exception to allow the app to start
+
+    yield
+
+    # Shutdown
+    logger.info("Application shutting down...")
+
+
 # Create FastAPI app
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -25,6 +46,7 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     docs_url=f"{settings.API_V1_STR}/docs",
     redoc_url=f"{settings.API_V1_STR}/redoc",
+    lifespan=lifespan,
 )
 
 # Add monitoring middleware
@@ -38,19 +60,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize database on startup."""
-    try:
-        logger.info(f"Connecting to database: {settings.database_url}")
-        init_db()
-        logger.info("Database initialization completed successfully!")
-    except Exception as e:
-        logger.error(f"Failed to initialize database: {e}")
-        logger.error("Application will start without database functionality.")
-        # Don't raise the exception to allow the app to start
 
 
 @app.get("/")

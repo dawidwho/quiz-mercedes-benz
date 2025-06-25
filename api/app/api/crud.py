@@ -195,7 +195,7 @@ class CRUDBase:
 
     def remove(self, db: Session, id: int) -> ModelType:
         """Delete a record by ID."""
-        obj = db.query(self.model).get(id)
+        obj = db.get(self.model, id)
         db.delete(obj)
         db.commit()
         return obj
