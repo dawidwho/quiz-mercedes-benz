@@ -13,6 +13,7 @@ services:
       - DEBUG=${DEBUG:-true}
     volumes:
       - ../app:/app
+      - ../docker/scripts:/app/docker/scripts
       - /app/node_modules
     networks:
       - frontend-network

@@ -33,4 +33,4 @@ shell:
 	docker-compose -f compose/docker-compose.yml exec fastapi-app /bin/bash
 
 clean:
-	docker-compose -f compose/docker-compose.yml down --rmi all --volumes --remove-orphans
+	docker-compose -f compose/docker-compose.yml down -v --remove-orphans

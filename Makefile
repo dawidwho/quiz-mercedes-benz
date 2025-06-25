@@ -51,7 +51,7 @@ run: api-run front-run
 
 test: api-test front-test
 
-clean: api-clean front-clean
+clean: api-clean front-clean clean-all
 
 # API targets
 api-up:
@@ -126,6 +126,14 @@ front-clean:
 	cd front && make clean
 
 # Additional utility targets
+# TODO: This is a hack to clean all containers and volumes, it should be improved
+clean-all:
+	@echo "Cleaning all containers and volumes..."
+	cd front && docker-compose -f compose/docker-compose.yml down --rmi all --volumes --remove-orphans
+	cd api && docker-compose -f compose/docker-compose.yml down --rmi all --volumes --remove-orphans
+	cd front && docker volume prune -f
+	cd api && docker volume prune -f
+
 recreate: down up
 
 recreate-6969: down front-up-6969

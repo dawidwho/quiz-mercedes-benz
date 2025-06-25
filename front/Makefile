@@ -39,5 +39,4 @@ shell:
 	docker-compose -f compose/docker-compose.yml exec react-app /bin/sh
 
 clean:
-	docker-compose -f compose/docker-compose.yml down -v
-	docker-compose -f compose/docker-compose.yml down --rmi all --volumes --remove-orphans
+	docker-compose -f compose/docker-compose.yml down -v --remove-orphans
