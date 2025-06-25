@@ -207,7 +207,7 @@ This script will:
 
 ### AI Insights Endpoint
 
-The `/api/simulate-ai-insight/` endpoint simulates AI-generated descriptions for people and planets from the Star Wars universe.
+The `/api/simulate-ai-insight/` endpoint simulates AI-generated descriptions for people and planets from the Star Wars Universe.
 
 #### Usage
 

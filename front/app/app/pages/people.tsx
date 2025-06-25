@@ -144,7 +144,7 @@ export default function People() {
     return (
         <StarWarsTable
             title="Star Wars People"
-            description="Discover and learn about characters from the Star Wars universe"
+            description="Discover and learn about characters from the Star Wars Universe"
             columns={columns}
             dataFetcher={starWarsApiClient.getPeople}
             loading={loading}

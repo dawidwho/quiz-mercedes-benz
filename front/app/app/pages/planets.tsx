@@ -139,7 +139,7 @@ export default function Planets() {
     return (
         <StarWarsTable
             title="Star Wars Planets"
-            description="Discover and learn about planets from the Star Wars universe"
+            description="Discover and learn about planets from the Star Wars Universe"
             columns={columns}
             dataFetcher={starWarsApiClient.getPlanets}
             loading={loading}
