@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.api import deps, schemas, crud
 from app.db.models import People as PeopleModel, Planets as PlanetsModel
+from app.core.timezone import now
 
 router = APIRouter(prefix="/simulate-ai-insight", tags=["ai-insights"])
 
@@ -156,7 +157,7 @@ def simulate_ai_insight(
             entity_type=request.entity_type.lower(),
             insight=insight,
             confidence_score=0.3,
-            generated_at=datetime.utcnow(),
+            generated_at=now(),
             model_version="v1.0",
         )
 
@@ -174,7 +175,7 @@ def simulate_ai_insight(
         entity_type=request.entity_type.lower(),
         insight=insight,
         confidence_score=confidence_score,
-        generated_at=datetime.utcnow(),
+        generated_at=now(),
         model_version="v1.0",
     )
 

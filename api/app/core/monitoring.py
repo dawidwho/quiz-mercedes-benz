@@ -8,6 +8,7 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime
 from dataclasses import dataclass, asdict
 from enum import Enum
+from .timezone import now
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ class SearchEvent:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow().isoformat()
+            self.timestamp = now().isoformat()
 
 
 @dataclass
@@ -63,7 +64,7 @@ class SortEvent:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.utcnow().isoformat()
+            self.timestamp = now().isoformat()
 
 
 class MonitoringService:
@@ -176,7 +177,7 @@ class MonitoringService:
         try:
             event_data = {
                 "event_type": EventType.API_REQUEST.value,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": now().isoformat(),
                 "method": method,
                 "path": path,
                 "status_code": status_code,
@@ -198,7 +199,7 @@ class MonitoringService:
         try:
             event_data = {
                 "event_type": EventType.ERROR.value,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": now().isoformat(),
                 "error_type": type(error).__name__,
                 "error_message": str(error),
                 "context": context or {},
@@ -226,7 +227,7 @@ class MonitoringService:
         return {
             "search_metrics": self.get_search_metrics(),
             "sort_metrics": self.get_sort_metrics(),
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": now().isoformat(),
         }
 
 

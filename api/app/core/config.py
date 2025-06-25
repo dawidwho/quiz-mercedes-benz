@@ -38,6 +38,10 @@ class Settings(BaseSettings):
     # External API settings
     STAR_WARS_API_URL: str = "https://swapi.dev/api/"
 
+    # Timezone settings
+    TIMEZONE: str = "UTC"
+    USE_TIMEZONE: bool = True
+
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v):
