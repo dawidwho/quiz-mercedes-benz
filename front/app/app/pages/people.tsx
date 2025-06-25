@@ -117,26 +117,26 @@ export default function People() {
     };
 
     const columns: GridColDef[] = [
-        { field: 'name', headerName: 'Name', width: 200, filterable: true },
-        { field: 'height', headerName: 'Height (cm)', width: 120, type: 'number', filterable: true },
-        { field: 'mass', headerName: 'Mass (kg)', width: 120, type: 'number', filterable: true },
-        { field: 'hair_color', headerName: 'Hair Color', width: 120, filterable: true },
-        { field: 'skin_color', headerName: 'Skin Color', width: 120, filterable: true },
-        { field: 'eye_color', headerName: 'Eye Color', width: 120, filterable: true },
-        { field: 'birth_year', headerName: 'Birth Year', width: 120, filterable: true },
-        { field: 'gender', headerName: 'Gender', width: 100, filterable: true },
+        { field: 'name', headerName: 'Name', width: 200, filterable: false },
+        { field: 'height', headerName: 'Height (cm)', width: 120, type: 'number', filterable: false },
+        { field: 'mass', headerName: 'Mass (kg)', width: 120, type: 'number', filterable: false },
+        { field: 'hair_color', headerName: 'Hair Color', width: 120, filterable: false },
+        { field: 'skin_color', headerName: 'Skin Color', width: 120, filterable: false },
+        { field: 'eye_color', headerName: 'Eye Color', width: 120, filterable: false },
+        { field: 'birth_year', headerName: 'Birth Year', width: 120, filterable: false },
+        { field: 'gender', headerName: 'Gender', width: 100, filterable: false },
         {
             field: 'created_at',
             headerName: 'Created',
             width: 150,
-            filterable: true,
+            filterable: false,
             valueFormatter: (params: any) => formatDate(params)
         },
         {
             field: 'updated_at',
             headerName: 'Updated',
             width: 150,
-            filterable: true,
+            filterable: false,
             valueFormatter: (params: any) => formatDate(params)
         },
     ];

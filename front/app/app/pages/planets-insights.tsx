@@ -1,14 +1,21 @@
-import { useState } from "react";
-import { InsightsCard } from "../components/InsightsCard";
+import { useState, useRef } from "react";
+import { InsightsCard, type InsightsCardRef } from "../components/InsightsCard";
 import type { AIInsightResponse } from "../models/insights";
 
 export default function PlanetsInsights() {
     const [entityName, setEntityName] = useState("");
     const [savedInsights, setSavedInsights] = useState<AIInsightResponse[]>([]);
+    const insightsCardRef = useRef<InsightsCardRef>(null);
 
     const handleInsightGenerated = (insight: AIInsightResponse) => {
         // Add the new insight to the saved insights
         setSavedInsights(prev => [insight, ...prev]);
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && entityName.trim()) {
+            insightsCardRef.current?.generateInsight();
+        }
     };
 
     const removeInsight = (index: number) => {
@@ -32,28 +39,50 @@ export default function PlanetsInsights() {
                     </p>
                 </div>
 
-                {/* Input Section */}
+                {/* Search Input Section */}
                 <div className="mb-8">
                     <div className="bg-white rounded-lg shadow-md p-6">
                         <label htmlFor="planetName" className="block text-sm font-medium text-gray-700 mb-2">
-                            Enter Planet Name
+                            Search for a Planet
                         </label>
-                        <div className="flex space-x-4">
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
                             <input
                                 type="text"
                                 id="planetName"
                                 value={entityName}
                                 onChange={(e) => setEntityName(e.target.value)}
+                                onKeyDown={handleKeyPress}
                                 placeholder="e.g., Tatooine, Alderaan, Coruscant..."
-                                className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-black placeholder-gray-500"
+                                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-black placeholder-gray-500 shadow-sm"
                             />
+                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <button
+                                    onClick={() => insightsCardRef.current?.generateInsight()}
+                                    disabled={!entityName.trim()}
+                                    className="p-2 text-gray-400 hover:text-blue-600 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors duration-200"
+                                    title="Generate insight"
+                                >
+                                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
+                        <p className="mt-2 text-sm text-gray-500">
+                            Press Enter or click the lightning icon to generate insights
+                        </p>
                     </div>
                 </div>
 
                 {/* Insights Card */}
                 <div className="mb-8">
                     <InsightsCard
+                        ref={insightsCardRef}
                         entityType="planets"
                         entityName={entityName}
                         onInsightGenerated={handleInsightGenerated}

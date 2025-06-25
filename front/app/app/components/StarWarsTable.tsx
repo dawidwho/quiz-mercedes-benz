@@ -148,7 +148,7 @@ export default function StarWarsTable({
                 </header>
 
                 {/* Search Input */}
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 3, maxWidth: 400 }}>
                     <TextField
                         ref={searchInputRef}
                         fullWidth

@@ -76,6 +76,13 @@ export default function EditionCard({ title, sections, backLink, onChange, onSub
                             ))}
                         </div>
                         <div className="mt-8 flex justify-end space-x-4">
+                            <button
+                                type="submit"
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded shadow disabled:opacity-50"
+                                disabled={loading}
+                            >
+                                {loading ? "Saving..." : submitLabel}
+                            </button>
                             {onSaveAsCopy && (
                                 <button
                                     type="button"
@@ -86,13 +93,6 @@ export default function EditionCard({ title, sections, backLink, onChange, onSub
                                     {saveAsCopyLoading ? "Creating..." : "Save as Copy"}
                                 </button>
                             )}
-                            <button
-                                type="submit"
-                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded shadow disabled:opacity-50"
-                                disabled={loading}
-                            >
-                                {loading ? "Saving..." : submitLabel}
-                            </button>
                         </div>
                     </div>
                 </form>

@@ -111,27 +111,27 @@ export default function Planets() {
     };
 
     const columns: GridColDef[] = [
-        { field: 'name', headerName: 'Name', width: 150, filterable: true },
-        { field: 'rotation_period', headerName: 'Rotation Period', width: 140, type: 'number', filterable: true },
-        { field: 'orbital_period', headerName: 'Orbital Period', width: 140, type: 'number', filterable: true },
-        { field: 'diameter', headerName: 'Diameter (km)', width: 140, type: 'number', filterable: true },
-        { field: 'climate', headerName: 'Climate', width: 120, filterable: true },
-        { field: 'gravity', headerName: 'Gravity', width: 120, filterable: true },
-        { field: 'terrain', headerName: 'Terrain', width: 150, filterable: true },
-        { field: 'surface_water', headerName: 'Surface Water (%)', width: 150, type: 'number', filterable: true },
-        { field: 'population', headerName: 'Population', width: 140, type: 'number', filterable: true },
+        { field: 'name', headerName: 'Name', width: 150, filterable: false },
+        { field: 'rotation_period', headerName: 'Rotation Period', width: 140, type: 'number', filterable: false },
+        { field: 'orbital_period', headerName: 'Orbital Period', width: 140, type: 'number', filterable: false },
+        { field: 'diameter', headerName: 'Diameter (km)', width: 140, type: 'number', filterable: false },
+        { field: 'climate', headerName: 'Climate', width: 120, filterable: false },
+        { field: 'gravity', headerName: 'Gravity', width: 120, filterable: false },
+        { field: 'terrain', headerName: 'Terrain', width: 150, filterable: false },
+        { field: 'surface_water', headerName: 'Surface Water (%)', width: 150, type: 'number', filterable: false },
+        { field: 'population', headerName: 'Population', width: 140, type: 'number', filterable: false },
         {
             field: 'created_at',
             headerName: 'Created',
             width: 150,
-            filterable: true,
+            filterable: false,
             valueFormatter: (params: any) => formatDate(params)
         },
         {
             field: 'updated_at',
             headerName: 'Updated',
             width: 150,
-            filterable: true,
+            filterable: false,
             valueFormatter: (params: any) => formatDate(params)
         },
     ];
