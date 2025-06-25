@@ -28,7 +28,7 @@ export function Navigation() {
                                 className="h-8 w-8"
                             />
                             <span className="text-white font-semibold text-lg">
-                                Quiz Mercedes-Benz
+                                Mercedes-Benz
                             </span>
                         </Link>
                     </div>

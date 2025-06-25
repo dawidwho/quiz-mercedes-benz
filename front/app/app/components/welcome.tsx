@@ -14,10 +14,10 @@ export function Welcome() {
           </div>
           <div className="text-center">
             <h1 className="text-4xl font-bold text-white mb-4">
-              Welcome to Quiz Mercedes-Benz
+              Welcome to Mercedes-Benz Quiz
             </h1>
             <p className="text-xl text-gray-300 max-w-2xl">
-              Explore the Star Wars universe with our interactive quiz featuring people and planets.
+              Explore the Star Wars Universe with our interactive quiz featuring people and planets.
               Test your knowledge and save your favorite characters and locations.
             </p>
           </div>
