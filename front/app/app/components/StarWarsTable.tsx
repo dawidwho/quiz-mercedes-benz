@@ -218,7 +218,6 @@ export default function StarWarsTable({
                             filterMode="server"
                             sortingMode="server"
                             rowCount={totalCount}
-                            checkboxSelection
                             sx={{ border: 0 }}
                             getRowHeight={() => 'auto'}
                         />
